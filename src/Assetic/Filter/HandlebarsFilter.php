@@ -24,6 +24,8 @@ class HandlebarsFilter extends BaseNodeFilter
 {
     private $handlebarsBin;
     private $nodeBin;
+    private $rootDir;
+    private $prefix;
 
     private $minimize = false;
     private $simple = false;
@@ -42,6 +44,16 @@ class HandlebarsFilter extends BaseNodeFilter
     public function setSimple($simple)
     {
         $this->simple = $simple;
+    }
+
+    public function setPrefix($prefix)
+    {
+        $this->prefix = $prefix;
+    }
+
+    public function setRootDirectory($dir)
+    {
+        $this->rootDir = $dir;
     }
 
     public function filterLoad(AssetInterface $asset)
@@ -69,6 +81,28 @@ class HandlebarsFilter extends BaseNodeFilter
             $pb->add('--simple');
         }
 
+        $prefix = '';
+        if($this->rootDir && substr($asset->getSourceRoot(), 0, strlen($this->rootDir)) == $this->rootDir) {
+            $namespaceDir = substr($asset->getSourceRoot(), strlen($this->rootDir));
+            $namespace = str_replace(array('/', '\\'), '.', trim($namespaceDir, '\\/'));
+
+            if($this->prefix) {
+                $namespace = $this->prefix . '.' . $namespace;
+            }
+
+            $pb->add('-n')->add($namespace);
+
+            $splitNamespace = explode('.', $namespace);
+            $connectedNamespace = array();
+
+            $prefix .= 'var ';
+            foreach($splitNamespace as $segment) {
+                $connectedNamespace[] = $segment;
+                $fullNamespace = implode('.', $connectedNamespace);
+                $prefix .= "{$fullNamespace} = {$fullNamespace} || {};\n";
+            }
+        }
+
         $process = $pb->getProcess();
         $returnCode = $process->run();
 
@@ -93,7 +127,7 @@ class HandlebarsFilter extends BaseNodeFilter
         $compiledJs = file_get_contents($outputPath);
         unlink($outputPath);
 
-        $asset->setContent($compiledJs);
+        $asset->setContent($prefix . $compiledJs);
     }
 
     public function filterDump(AssetInterface $asset)
