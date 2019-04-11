@@ -3,7 +3,7 @@
 /*
  * This file is part of the Assetic package, an OpenSky project.
  *
- * (c) 2010-2013 OpenSky Project Inc
+ * (c) 2010-2014 OpenSky Project Inc
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -19,6 +19,8 @@ use Assetic\Filter\GssFilter;
  */
 class GssFilterTest extends FilterTestCase
 {
+    private $filter;
+
     protected function setUp()
     {
         if (!$javaBin = $this->findExecutable('java', 'JAVA_BIN')) {
@@ -30,6 +32,11 @@ class GssFilterTest extends FilterTestCase
         }
 
         $this->filter = new GssFilter($_SERVER['GSS_JAR'], $javaBin);
+    }
+
+    protected function tearDown()
+    {
+        $this->filter = null;
     }
 
     public function testCompile()

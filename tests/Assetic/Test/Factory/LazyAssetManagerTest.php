@@ -3,7 +3,7 @@
 /*
  * This file is part of the Assetic package, an OpenSky project.
  *
- * (c) 2010-2013 OpenSky Project Inc
+ * (c) 2010-2014 OpenSky Project Inc
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,12 +11,12 @@
 
 namespace Assetic\Test\Factory;
 
-use Assetic\Asset\AssetCollection;
 use Assetic\Factory\LazyAssetManager;
 
 class LazyAssetManagerTest extends \PHPUnit_Framework_TestCase
 {
     private $factory;
+    private $am;
 
     protected function setUp()
     {
@@ -27,16 +27,22 @@ class LazyAssetManagerTest extends \PHPUnit_Framework_TestCase
         $this->am = new LazyAssetManager($this->factory);
     }
 
+    protected function tearDown()
+    {
+        $this->factory = null;
+        $this->am = null;
+    }
+
     public function testGetFromLoader()
     {
-        $resource = $this->getMock('Assetic\\Factory\\Resource\\ResourceInterface');
-        $loader = $this->getMock('Assetic\\Factory\\Loader\\FormulaLoaderInterface');
-        $asset = $this->getMock('Assetic\\Asset\\AssetInterface');
+        $resource = $this->getMockBuilder('Assetic\\Factory\\Resource\\ResourceInterface')->getMock();
+        $loader = $this->getMockBuilder('Assetic\\Factory\\Loader\\FormulaLoaderInterface')->getMock();
+        $asset = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
 
         $formula = array(
             array('js/core.js', 'js/more.js'),
             array('?yui_js'),
-            array('output' => 'js/all.js')
+            array('output' => 'js/all.js'),
         );
 
         $loader->expects($this->once())
@@ -60,8 +66,8 @@ class LazyAssetManagerTest extends \PHPUnit_Framework_TestCase
     public function testGetResources()
     {
         $resources = array(
-            $this->getMock('Assetic\\Factory\\Resource\\ResourceInterface'),
-            $this->getMock('Assetic\\Factory\\Resource\\ResourceInterface'),
+            $this->getMockBuilder('Assetic\\Factory\\Resource\\ResourceInterface')->getMock(),
+            $this->getMockBuilder('Assetic\\Factory\\Resource\\ResourceInterface')->getMock(),
         );
 
         $this->am->addResource($resources[0], 'foo');
@@ -97,64 +103,12 @@ class LazyAssetManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testGetLastModified()
     {
-        $asset = $this->getMock('Assetic\Asset\AssetInterface');
-        $child = $this->getMock('Assetic\Asset\AssetInterface');
-        $filter1 = $this->getMock('Assetic\Filter\FilterInterface');
-        $filter2 = $this->getMock('Assetic\Filter\DependencyExtractorInterface');
+        $asset = $this->getMockBuilder('Assetic\Asset\AssetInterface')->getMock();
 
-        $asset->expects($this->any())
+        $this->factory->expects($this->once())
             ->method('getLastModified')
             ->will($this->returnValue(123));
-        $asset->expects($this->any())
-            ->method('getFilters')
-            ->will($this->returnValue(array($filter1, $filter2)));
-        $asset->expects($this->once())
-            ->method('ensureFilter')
-            ->with($filter1);
-        $filter2->expects($this->once())
-            ->method('getChildren')
-            ->with($this->factory)
-            ->will($this->returnValue(array($child)));
-        $child->expects($this->any())
-            ->method('getLastModified')
-            ->will($this->returnValue(456));
-        $child->expects($this->any())
-            ->method('getFilters')
-            ->will($this->returnValue(array()));
 
-        $this->assertEquals(456, $this->am->getLastModified($asset));
-    }
-
-    public function testGetLastModifiedCollection()
-    {
-        $leaf = $this->getMock('Assetic\Asset\AssetInterface');
-        $child = $this->getMock('Assetic\Asset\AssetInterface');
-        $filter1 = $this->getMock('Assetic\Filter\FilterInterface');
-        $filter2 = $this->getMock('Assetic\Filter\DependencyExtractorInterface');
-
-        $asset = new AssetCollection();
-        $asset->add($leaf);
-
-        $leaf->expects($this->any())
-            ->method('getLastModified')
-            ->will($this->returnValue(123));
-        $leaf->expects($this->any())
-            ->method('getFilters')
-            ->will($this->returnValue(array($filter1, $filter2)));
-        $leaf->expects($this->once())
-            ->method('ensureFilter')
-            ->with($filter1);
-        $filter2->expects($this->once())
-            ->method('getChildren')
-            ->with($this->factory)
-            ->will($this->returnValue(array($child)));
-        $child->expects($this->any())
-            ->method('getLastModified')
-            ->will($this->returnValue(456));
-        $child->expects($this->any())
-            ->method('getFilters')
-            ->will($this->returnValue(array()));
-
-        $this->assertEquals(456, $this->am->getLastModified($asset));
+        $this->assertSame(123, $this->am->getLastModified($asset));
     }
 }

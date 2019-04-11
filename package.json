@@ -3,10 +3,17 @@
     "uglifycss": "*",
     "coffee-script": "*",
     "stylus": "*",
+    "nib": "*",
     "ember-precompile": "*",
     "typescript": "*",
     "less": "*",
     "handlebars": "*",
-    "uglify-js": "*"
+    "uglify-js": "*",
+    "autoprefixer": "*",
+    "autoprefixer-5": "^1.x",
+    "autoprefixer-cli": "*",
+    "roole": "*",
+    "react-tools": "*",
+    "clean-css": "*"
   }
 }

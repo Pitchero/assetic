@@ -3,7 +3,7 @@
 /*
  * This file is part of the Assetic package, an OpenSky project.
  *
- * (c) 2010-2013 OpenSky Project Inc
+ * (c) 2010-2014 OpenSky Project Inc
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,12 +12,14 @@
 namespace Assetic\Test;
 
 use Assetic\Asset\FileAsset;
-
-use Assetic\AssetManager;
 use Assetic\AssetWriter;
 
 class AssetWriterTest extends \PHPUnit_Framework_TestCase
 {
+    private $dir;
+    /** @var AssetWriter */
+    private $writer;
+
     protected function setUp()
     {
         $this->dir = sys_get_temp_dir().'/assetic_tests_'.rand(11111, 99999);
@@ -25,7 +27,7 @@ class AssetWriterTest extends \PHPUnit_Framework_TestCase
         $this->writer = new AssetWriter($this->dir, array(
             'locale' => array('en', 'de', 'fr'),
             'browser' => array('ie', 'firefox', 'other'),
-            'gzip' => array('gzip', '')
+            'gzip' => array('gzip', ''),
         ));
     }
 
@@ -37,8 +39,8 @@ class AssetWriterTest extends \PHPUnit_Framework_TestCase
 
     public function testWriteManagerAssets()
     {
-        $asset = $this->getMock('Assetic\\Asset\\AssetInterface');
-        $am = $this->getMock('Assetic\\AssetManager');
+        $asset = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
+        $am = $this->getMockBuilder('Assetic\\AssetManager')->getMock();
 
         $am->expects($this->once())
             ->method('getNames')
@@ -68,7 +70,7 @@ class AssetWriterTest extends \PHPUnit_Framework_TestCase
 
     public function testWriteAssetWithVars()
     {
-        $asset = $this->getMock('Assetic\Asset\AssetInterface');
+        $asset = $this->getMockBuilder('Assetic\Asset\AssetInterface')->getMock();
         $asset->expects($this->atLeastOnce())
             ->method('getVars')
             ->will($this->returnValue(array('locale')));
@@ -81,13 +83,13 @@ class AssetWriterTest extends \PHPUnit_Framework_TestCase
         );
         $asset->expects($this->exactly(3))
             ->method('setValues')
-            ->will($this->returnCallback(function($values) use ($self, $expectedValues) {
+            ->will($this->returnCallback(function ($values) use ($self, $expectedValues) {
                 static $counter = 0;
                 $self->assertEquals($expectedValues[$counter++], $values);
             }));
         $asset->expects($this->exactly(3))
             ->method('getValues')
-            ->will($this->returnCallback(function() use ($expectedValues) {
+            ->will($this->returnCallback(function () use ($expectedValues) {
                 static $counter = 0;
 
                 return $expectedValues[$counter++];

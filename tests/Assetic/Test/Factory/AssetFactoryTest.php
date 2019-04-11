@@ -3,7 +3,7 @@
 /*
  * This file is part of the Assetic package, an OpenSky project.
  *
- * (c) 2010-2013 OpenSky Project Inc
+ * (c) 2010-2014 OpenSky Project Inc
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,6 +11,7 @@
 
 namespace Assetic\Test\Factory;
 
+use Assetic\Asset\AssetCollection;
 use Assetic\Factory\AssetFactory;
 
 class AssetFactoryTest extends \PHPUnit_Framework_TestCase
@@ -21,12 +22,19 @@ class AssetFactoryTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->am = $this->getMock('Assetic\\AssetManager');
-        $this->fm = $this->getMock('Assetic\\FilterManager');
+        $this->am = $this->getMockBuilder('Assetic\\AssetManager')->getMock();
+        $this->fm = $this->getMockBuilder('Assetic\\FilterManager')->getMock();
 
         $this->factory = new AssetFactory(__DIR__);
         $this->factory->setAssetManager($this->am);
         $this->factory->setFilterManager($this->fm);
+    }
+
+    protected function tearDown()
+    {
+        $this->am = null;
+        $this->fm = null;
+        $this->factory = null;
     }
 
     public function testNoAssetManagerReference()
@@ -53,7 +61,7 @@ class AssetFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateAssetReference()
     {
-        $referenced = $this->getMock('Assetic\\Asset\\AssetInterface');
+        $referenced = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
 
         $this->am->expects($this->any())
             ->method('get')
@@ -125,7 +133,7 @@ class AssetFactoryTest extends \PHPUnit_Framework_TestCase
         $this->fm->expects($this->once())
             ->method('get')
             ->with('foo')
-            ->will($this->returnValue($this->getMock('Assetic\\Filter\\FilterInterface')));
+            ->will($this->returnValue($this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock()));
 
         $asset = $this->factory->createAsset(array(), array('foo'));
         $this->assertEquals(1, count($asset->getFilters()), '->createAsset() adds filters');
@@ -157,14 +165,14 @@ class AssetFactoryTest extends \PHPUnit_Framework_TestCase
         $this->fm->expects($this->once())
             ->method('get')
             ->with('foo')
-            ->will($this->returnValue($this->getMock('Assetic\\Filter\\FilterInterface')));
+            ->will($this->returnValue($this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock()));
 
         $this->factory->createAsset(array('foo.css'), array('?foo'));
     }
 
     public function testWorkers()
     {
-        $worker = $this->getMock('Assetic\\Factory\\Worker\\WorkerInterface');
+        $worker = $this->getMockBuilder('Assetic\\Factory\\Worker\\WorkerInterface')->getMock();
 
         // called once on the collection and once on each leaf
         $worker->expects($this->exactly(3))
@@ -177,8 +185,8 @@ class AssetFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testWorkerReturn()
     {
-        $worker = $this->getMock('Assetic\\Factory\\Worker\\WorkerInterface');
-        $asset = $this->getMock('Assetic\\Asset\\AssetInterface');
+        $worker = $this->getMockBuilder('Assetic\\Factory\\Worker\\WorkerInterface')->getMock();
+        $asset = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
 
         $worker->expects($this->at(2))
             ->method('process')
@@ -196,7 +204,7 @@ class AssetFactoryTest extends \PHPUnit_Framework_TestCase
         $this->fm->expects($this->once())
             ->method('get')
             ->with('foo')
-            ->will($this->returnValue($this->getMock('Assetic\\Filter\\FilterInterface')));
+            ->will($this->returnValue($this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock()));
 
         $inputs = array(
             'css/main.css',
@@ -215,5 +223,68 @@ class AssetFactoryTest extends \PHPUnit_Framework_TestCase
         }
 
         $this->assertEquals(2, $i);
+    }
+
+    public function testGetLastModified()
+    {
+        $asset = $this->getMockBuilder('Assetic\Asset\AssetInterface')->getMock();
+        $child = $this->getMockBuilder('Assetic\Asset\AssetInterface')->getMock();
+        $filter1 = $this->getMockBuilder('Assetic\Filter\FilterInterface')->getMock();
+        $filter2 = $this->getMockBuilder('Assetic\Filter\DependencyExtractorInterface')->getMock();
+
+        $asset->expects($this->any())
+            ->method('getLastModified')
+            ->will($this->returnValue(123));
+        $asset->expects($this->any())
+            ->method('getFilters')
+            ->will($this->returnValue(array($filter1, $filter2)));
+        $asset->expects($this->once())
+            ->method('ensureFilter')
+            ->with($filter1);
+        $filter2->expects($this->once())
+            ->method('getChildren')
+            ->with($this->factory)
+            ->will($this->returnValue(array($child)));
+        $child->expects($this->any())
+            ->method('getLastModified')
+            ->will($this->returnValue(456));
+        $child->expects($this->any())
+            ->method('getFilters')
+            ->will($this->returnValue(array()));
+
+        $this->assertEquals(456, $this->factory->getLastModified($asset));
+    }
+
+    public function testGetLastModifiedCollection()
+    {
+        $leaf = $this->getMockBuilder('Assetic\Asset\AssetInterface')->getMock();
+        $child = $this->getMockBuilder('Assetic\Asset\AssetInterface')->getMock();
+        $filter1 = $this->getMockBuilder('Assetic\Filter\FilterInterface')->getMock();
+        $filter2 = $this->getMockBuilder('Assetic\Filter\DependencyExtractorInterface')->getMock();
+
+        $asset = new AssetCollection();
+        $asset->add($leaf);
+
+        $leaf->expects($this->any())
+            ->method('getLastModified')
+            ->will($this->returnValue(123));
+        $leaf->expects($this->any())
+            ->method('getFilters')
+            ->will($this->returnValue(array($filter1, $filter2)));
+        $leaf->expects($this->once())
+            ->method('ensureFilter')
+            ->with($filter1);
+        $filter2->expects($this->once())
+            ->method('getChildren')
+            ->with($this->factory)
+            ->will($this->returnValue(array($child)));
+        $child->expects($this->any())
+            ->method('getLastModified')
+            ->will($this->returnValue(456));
+        $child->expects($this->any())
+            ->method('getFilters')
+            ->will($this->returnValue(array()));
+
+        $this->assertEquals(456, $this->factory->getLastModified($asset));
     }
 }

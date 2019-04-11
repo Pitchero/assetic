@@ -3,7 +3,7 @@
 /*
  * This file is part of the Assetic package, an OpenSky project.
  *
- * (c) 2010-2013 OpenSky Project Inc
+ * (c) 2010-2014 OpenSky Project Inc
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -23,7 +23,7 @@ class LessFilterTest extends FilterTestCase
     /**
      * @var LessFilter
      */
-    protected $filter;
+    private $filter;
 
     protected function setUp()
     {
@@ -36,6 +36,11 @@ class LessFilterTest extends FilterTestCase
         }
 
         $this->filter = new LessFilter($nodeBin, isset($_SERVER['NODE_PATH']) ? array($_SERVER['NODE_PATH']) : array());
+    }
+
+    protected function tearDown()
+    {
+        $this->filter = null;
     }
 
     public function testFilterLoad()
@@ -71,9 +76,7 @@ EOF;
     public function testCompressImport()
     {
         $expected = <<<EOF
-.foo{color:blue}
-.foo{color:red}
-
+.foo{color:blue}.foo{color:red}
 EOF;
 
         $asset = new FileAsset(__DIR__.'/fixtures/less/main.less');

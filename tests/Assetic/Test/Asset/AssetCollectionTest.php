@@ -3,7 +3,7 @@
 /*
  * This file is part of the Assetic package, an OpenSky project.
  *
- * (c) 2010-2013 OpenSky Project Inc
+ * (c) 2010-2014 OpenSky Project Inc
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -26,7 +26,7 @@ class AssetCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testLoadFilter()
     {
-        $filter = $this->getMock('Assetic\\Filter\\FilterInterface');
+        $filter = $this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock();
         $filter->expects($this->once())->method('filterLoad');
 
         $coll = new AssetCollection(array(new StringAsset('')), array($filter));
@@ -35,7 +35,7 @@ class AssetCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testDumpFilter()
     {
-        $filter = $this->getMock('Assetic\\Filter\\FilterInterface');
+        $filter = $this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock();
         $filter->expects($this->once())->method('filterDump');
 
         $coll = new AssetCollection(array(new StringAsset('')), array($filter));
@@ -48,7 +48,7 @@ class AssetCollectionTest extends \PHPUnit_Framework_TestCase
 
         $count = 0;
         $matches = array();
-        $filter = new CallablesFilter(function($asset) use ($content, &$matches, &$count) {
+        $filter = new CallablesFilter(function ($asset) use ($content, &$matches, &$count) {
             ++$count;
             if ($content == $asset->getContent()) {
                 $matches[] = $asset;
@@ -70,7 +70,7 @@ class AssetCollectionTest extends \PHPUnit_Framework_TestCase
         $innerColl = new AssetCollection(array($nestedAsset));
 
         $contents = array();
-        $filter = new CallablesFilter(function($asset) use (&$contents) {
+        $filter = new CallablesFilter(function ($asset) use (&$contents) {
             $contents[] = $asset->getContent();
         });
 
@@ -125,7 +125,7 @@ class AssetCollectionTest extends \PHPUnit_Framework_TestCase
     public function testIterationFilters()
     {
         $count = 0;
-        $filter = new CallablesFilter(function() use (&$count) { ++$count; });
+        $filter = new CallablesFilter(function () use (&$count) { ++$count; });
 
         $coll = new AssetCollection();
         $coll->add(new StringAsset(''));
@@ -154,7 +154,7 @@ class AssetCollectionTest extends \PHPUnit_Framework_TestCase
         $assets = array();
 
         for ($i = 0; $i < count($timestamps); $i++) {
-            $asset = $this->getMock('Assetic\\Asset\\AssetInterface');
+            $asset = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
             $asset->expects($this->once())
                 ->method('getLastModified')
                 ->will($this->returnValue($timestamps[$i]));
@@ -192,10 +192,10 @@ class AssetCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testRecursiveIteration()
     {
-        $asset1 = $this->getMock('Assetic\\Asset\\AssetInterface');
-        $asset2 = $this->getMock('Assetic\\Asset\\AssetInterface');
-        $asset3 = $this->getMock('Assetic\\Asset\\AssetInterface');
-        $asset4 = $this->getMock('Assetic\\Asset\\AssetInterface');
+        $asset1 = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
+        $asset2 = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
+        $asset3 = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
+        $asset4 = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
 
         $coll3 = new AssetCollection(array($asset1, $asset2));
         $coll2 = new AssetCollection(array($asset3, $coll3));
@@ -211,7 +211,7 @@ class AssetCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testRecursiveDeduplication()
     {
-        $asset = $this->getMock('Assetic\\Asset\\AssetInterface');
+        $asset = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
 
         $coll3 = new AssetCollection(array($asset, $asset));
         $coll2 = new AssetCollection(array($asset, $coll3));
@@ -301,7 +301,7 @@ class AssetCollectionTest extends \PHPUnit_Framework_TestCase
         $coll = new AssetCollection(array(
             new AssetCollection(array(
                 $leaf = new StringAsset('asdf'),
-            ))
+            )),
         ));
 
         $this->assertTrue($coll->removeLeaf($leaf));
@@ -364,7 +364,8 @@ class AssetCollectionTest extends \PHPUnit_Framework_TestCase
         $coll2->ensureFilter(new CallablesFilter());
 
         // Internally, this will set up the "clones" for collection #2 with one filter
-        foreach ($coll2 as $asset) { }
+        foreach ($coll2 as $asset) {
+        }
 
         // The clones on collection #1 must not be affected
         foreach ($coll1 as $asset) {

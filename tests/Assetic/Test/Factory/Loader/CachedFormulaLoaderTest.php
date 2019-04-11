@@ -3,7 +3,7 @@
 /*
  * This file is part of the Assetic package, an OpenSky project.
  *
- * (c) 2010-2013 OpenSky Project Inc
+ * (c) 2010-2014 OpenSky Project Inc
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -21,11 +21,18 @@ class CachedFormulaLoaderTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->loader = $this->getMock('Assetic\\Factory\\Loader\\FormulaLoaderInterface');
+        $this->loader = $this->getMockBuilder('Assetic\\Factory\\Loader\\FormulaLoaderInterface')->getMock();
         $this->configCache = $this->getMockBuilder('Assetic\\Cache\\ConfigCache')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->resource = $this->getMock('Assetic\\Factory\\Resource\\ResourceInterface');
+        $this->resource = $this->getMockBuilder('Assetic\\Factory\\Resource\\ResourceInterface')->getMock();
+    }
+
+    protected function tearDown()
+    {
+        $this->loader = null;
+        $this->configCache = null;
+        $this->resource = null;
     }
 
     public function testNotDebug()

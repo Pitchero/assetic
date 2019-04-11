@@ -3,7 +3,7 @@
 /*
  * This file is part of the Assetic package, an OpenSky project.
  *
- * (c) 2010-2013 OpenSky Project Inc
+ * (c) 2010-2014 OpenSky Project Inc
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -21,9 +21,16 @@ class ExpiringCacheTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->inner = $this->getMock('Assetic\\Cache\\CacheInterface');
+        $this->inner = $this->getMockBuilder('Assetic\\Cache\\CacheInterface')->getMock();
         $this->lifetime = 3600;
         $this->cache = new ExpiringCache($this->inner, $this->lifetime);
+    }
+
+    protected function tearDown()
+    {
+        $this->inner = null;
+        $this->lifetime = null;
+        $this->cache = null;
     }
 
     public function testHasExpired()

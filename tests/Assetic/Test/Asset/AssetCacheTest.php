@@ -3,7 +3,7 @@
 /*
  * This file is part of the Assetic package, an OpenSky project.
  *
- * (c) 2010-2013 OpenSky Project Inc
+ * (c) 2010-2014 OpenSky Project Inc
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,20 +17,28 @@ class AssetCacheTest extends \PHPUnit_Framework_TestCase
 {
     private $inner;
     private $cache;
+    /** @var AssetCache */
     private $asset;
 
     protected function setUp()
     {
-        $this->inner = $this->getMock('Assetic\\Asset\\AssetInterface');
-        $this->cache = $this->getMock('Assetic\\Cache\\CacheInterface');
+        $this->inner = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
+        $this->cache = $this->getMockBuilder('Assetic\\Cache\\CacheInterface')->getMock();
 
         $this->asset = new AssetCache($this->inner, $this->cache);
+    }
+
+    protected function tearDown()
+    {
+        $this->inner = null;
+        $this->cache = null;
+        $this->asset = null;
     }
 
     public function testLoadFromCache()
     {
         $content = 'asdf';
-        $filter = $this->getMock('Assetic\\Filter\\FilterInterface');
+        $filter = $this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock();
 
         $this->inner->expects($this->once())
             ->method('getFilters')
@@ -114,7 +122,7 @@ class AssetCacheTest extends \PHPUnit_Framework_TestCase
 
     public function testEnsureFilter()
     {
-        $filter = $this->getMock('Assetic\\Filter\\FilterInterface');
+        $filter = $this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock();
         $this->inner->expects($this->once())->method('ensureFilter');
         $this->asset->ensureFilter($filter);
     }
