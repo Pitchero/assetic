@@ -49,23 +49,31 @@ class AsseticExtensionTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped('Twig is not installed.');
         }
 
-        $this->am = $this->getMock('Assetic\\AssetManager');
-        $this->fm = $this->getMock('Assetic\\FilterManager');
+        $this->am = $this->getMockBuilder('Assetic\\AssetManager')->getMock();
+        $this->fm = $this->getMockBuilder('Assetic\\FilterManager')->getMock();
 
-        $this->valueSupplier = $this->getMock('Assetic\ValueSupplierInterface');
+        $this->valueSupplier = $this->getMockBuilder('Assetic\ValueSupplierInterface')->getMock();
 
         $this->factory = new AssetFactory(__DIR__.'/templates');
         $this->factory->setAssetManager($this->am);
         $this->factory->setFilterManager($this->fm);
 
-        $this->twig = new \Twig_Environment();
-        $this->twig->setLoader(new \Twig_Loader_Filesystem(__DIR__.'/templates'));
+        $this->twig = new \Twig_Environment(new \Twig_Loader_Filesystem(__DIR__.'/templates'));
         $this->twig->addExtension(new AsseticExtension($this->factory, array(), $this->valueSupplier));
+    }
+
+    protected function tearDown()
+    {
+        $this->am = null;
+        $this->fm = null;
+        $this->factory = null;
+        $this->twig = null;
+        $this->valueSupplier = null;
     }
 
     public function testReference()
     {
-        $asset = $this->getMock('Assetic\\Asset\\AssetInterface');
+        $asset = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
         $this->am->expects($this->any())
             ->method('get')
             ->with('foo')
@@ -92,7 +100,7 @@ class AsseticExtensionTest extends \PHPUnit_Framework_TestCase
 
     public function testFilters()
     {
-        $filter = $this->getMock('Assetic\\Filter\\FilterInterface');
+        $filter = $this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock();
 
         $this->fm->expects($this->at(0))
             ->method('get')
@@ -110,7 +118,7 @@ class AsseticExtensionTest extends \PHPUnit_Framework_TestCase
 
     public function testOptionalFilter()
     {
-        $filter = $this->getMock('Assetic\\Filter\\FilterInterface');
+        $filter = $this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock();
 
         $this->fm->expects($this->once())
             ->method('get')
@@ -139,7 +147,7 @@ class AsseticExtensionTest extends \PHPUnit_Framework_TestCase
 
     public function testMixture()
     {
-        $asset = $this->getMock('Assetic\\Asset\\AssetInterface');
+        $asset = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
         $this->am->expects($this->any())
             ->method('get')
             ->with('foo')
@@ -152,7 +160,7 @@ class AsseticExtensionTest extends \PHPUnit_Framework_TestCase
 
     public function testDebug()
     {
-        $filter = $this->getMock('Assetic\\Filter\\FilterInterface');
+        $filter = $this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock();
 
         $this->fm->expects($this->once())
             ->method('get')
@@ -167,7 +175,7 @@ class AsseticExtensionTest extends \PHPUnit_Framework_TestCase
 
     public function testCombine()
     {
-        $filter = $this->getMock('Assetic\\Filter\\FilterInterface');
+        $filter = $this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock();
 
         $this->fm->expects($this->once())
             ->method('get')
@@ -188,13 +196,14 @@ class AsseticExtensionTest extends \PHPUnit_Framework_TestCase
 
     public function testFilterFunction()
     {
-        $filter = $this->getMock('Assetic\\Filter\\FilterInterface');
+        $filter = $this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock();
 
         $this->fm->expects($this->once())
             ->method('get')
             ->with('some_filter')
             ->will($this->returnValue($filter));
 
+        $this->twig = new \Twig_Environment(new \Twig_Loader_Filesystem(__DIR__.'/templates'));
         $this->twig->addExtension(new AsseticExtension($this->factory, array(
             'some_func' => array(
                 'filter' => 'some_filter',
@@ -229,7 +238,7 @@ class AsseticExtensionTest extends \PHPUnit_Framework_TestCase
         $coll->setTargetPath('output.{locale}.js');
 
         $coll->setValues(array('locale' => 'en'));
-        foreach($coll as $asset) {
+        foreach ($coll as $asset) {
             $this->assertEquals('output.{locale}_messages._1.js', $asset->getTargetPath(), 'targetPath must not contain several time the same variable');
         }
     }

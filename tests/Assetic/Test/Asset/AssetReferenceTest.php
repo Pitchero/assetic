@@ -12,6 +12,7 @@
 namespace Assetic\Test\Asset;
 
 use Assetic\Asset\AssetReference;
+use Assetic\Asset\StringAsset;
 
 class AssetReferenceTest extends \PHPUnit_Framework_TestCase
 {
@@ -20,8 +21,14 @@ class AssetReferenceTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->am = $this->getMock('Assetic\\AssetManager');
+        $this->am = $this->getMockBuilder('Assetic\\AssetManager')->getMock();
         $this->ref = new AssetReference($this->am, 'foo');
+    }
+
+    protected function tearDown()
+    {
+        $this->am = null;
+        $this->ref = null;
     }
 
     /**
@@ -29,7 +36,7 @@ class AssetReferenceTest extends \PHPUnit_Framework_TestCase
      */
     public function testMethods($method, $returnValue)
     {
-        $asset = $this->getMock('Assetic\\Asset\\AssetInterface');
+        $asset = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
 
         $this->am->expects($this->once())
             ->method('get')
@@ -56,12 +63,12 @@ class AssetReferenceTest extends \PHPUnit_Framework_TestCase
     public function testLazyFilters()
     {
         $this->am->expects($this->never())->method('get');
-        $this->ref->ensureFilter($this->getMock('Assetic\\Filter\\FilterInterface'));
+        $this->ref->ensureFilter($this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock());
     }
 
     public function testFilterFlush()
     {
-        $asset = $this->getMock('Assetic\\Asset\\AssetInterface');
+        $asset = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
 
         $this->am->expects($this->exactly(2))
             ->method('get')
@@ -72,14 +79,14 @@ class AssetReferenceTest extends \PHPUnit_Framework_TestCase
             ->method('getFilters')
             ->will($this->returnValue(array()));
 
-        $this->ref->ensureFilter($this->getMock('Assetic\\Filter\\FilterInterface'));
+        $this->ref->ensureFilter($this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock());
 
         $this->assertInternalType('array', $this->ref->getFilters(), '->getFilters() flushes and returns filters');
     }
 
     public function testSetContent()
     {
-        $asset = $this->getMock('Assetic\\Asset\\AssetInterface');
+        $asset = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
 
         $this->am->expects($this->once())
             ->method('get')
@@ -94,8 +101,8 @@ class AssetReferenceTest extends \PHPUnit_Framework_TestCase
 
     public function testLoad()
     {
-        $filter = $this->getMock('Assetic\\Filter\\FilterInterface');
-        $asset = $this->getMock('Assetic\\Asset\\AssetInterface');
+        $filter = $this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock();
+        $asset = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
 
         $this->am->expects($this->exactly(2))
             ->method('get')
@@ -110,8 +117,8 @@ class AssetReferenceTest extends \PHPUnit_Framework_TestCase
 
     public function testDump()
     {
-        $filter = $this->getMock('Assetic\\Filter\\FilterInterface');
-        $asset = $this->getMock('Assetic\\Asset\\AssetInterface');
+        $filter = $this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock();
+        $asset = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
 
         $this->am->expects($this->exactly(2))
             ->method('get')
@@ -122,5 +129,34 @@ class AssetReferenceTest extends \PHPUnit_Framework_TestCase
             ->with($filter);
 
         $this->ref->dump($filter);
+    }
+
+    public function testClone()
+    {
+        $filter1 = $this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock();
+        $filter2 = $this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock();
+        $filter3 = $this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock();
+
+        $asset = new StringAsset('');
+        $this->am->expects($this->any())
+            ->method('get')
+            ->with('foo')
+            ->will($this->returnValue($asset));
+
+        $this->ref->ensureFilter($filter1);
+        $this->ref->load();
+
+        $clone1 = clone $this->ref;
+        $clone1->ensureFilter($filter2);
+        $clone1->load();
+
+        $clone2 = clone $clone1;
+        $clone2->ensureFilter($filter3);
+        $clone2->load();
+
+        $this->assertCount(1, $asset->getFilters());
+        $this->assertCount(1, $this->ref->getFilters());
+        $this->assertCount(2, $clone1->getFilters());
+        $this->assertCount(3, $clone2->getFilters());
     }
 }

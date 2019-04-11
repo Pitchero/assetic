@@ -21,9 +21,16 @@ class ExpiringCacheTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->inner = $this->getMock('Assetic\\Cache\\CacheInterface');
+        $this->inner = $this->getMockBuilder('Assetic\\Cache\\CacheInterface')->getMock();
         $this->lifetime = 3600;
         $this->cache = new ExpiringCache($this->inner, $this->lifetime);
+    }
+
+    protected function tearDown()
+    {
+        $this->inner = null;
+        $this->lifetime = null;
+        $this->cache = null;
     }
 
     public function testHasExpired()

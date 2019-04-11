@@ -27,22 +27,21 @@ class CallablesFilterTest extends \PHPUnit_Framework_TestCase
     public function testLoader()
     {
         $nb = 0;
-        $filter = new CallablesFilter(function($asset) use (&$nb) { $nb++; });
-        $filter->filterLoad($this->getMock('Assetic\\Asset\\AssetInterface'));
+        $filter = new CallablesFilter(function ($asset) use (&$nb) { $nb++; });
+        $filter->filterLoad($this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock());
         $this->assertEquals(1, $nb, '->filterLoad() calls the loader callable');
     }
 
     public function testDumper()
     {
         $nb = 0;
-        $filter = new CallablesFilter(null, function($asset) use (&$nb) { $nb++; });
-        $filter->filterDump($this->getMock('Assetic\\Asset\\AssetInterface'));
+        $filter = new CallablesFilter(null, function ($asset) use (&$nb) { $nb++; });
+        $filter->filterDump($this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock());
         $this->assertEquals(1, $nb, '->filterDump() calls the loader callable');
     }
 
     public function testDependencyExtractor()
     {
-
         $nb = 0;
         $self = $this;
         $assetFactoryMock = $this->getMockBuilder('Assetic\\Factory\\AssetFactory')
@@ -51,11 +50,12 @@ class CallablesFilterTest extends \PHPUnit_Framework_TestCase
 
         $result = array(new StringAsset("test"));
 
-        $filter = new CallablesFilter(null, null, function(AssetFactory $factory, $content, $loadPath) use (&$nb, $assetFactoryMock, $self, $result) {
+        $filter = new CallablesFilter(null, null, function (AssetFactory $factory, $content, $loadPath) use (&$nb, $assetFactoryMock, $self, $result) {
             $self->assertSame($factory, $assetFactoryMock, '-> the asset factory is passed to the callable');
             $self->assertEquals('content', $content, '-> the content is passed to the callable');
             $self->assertEquals('loadPath', $loadPath, '-> the load path is passed to the callable');
             $nb++;
+
             return $result;
         });
 
