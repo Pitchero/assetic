@@ -11,6 +11,8 @@
 
 namespace Assetic\Filter;
 
+use Symfony\Component\Process\Process;
+
 abstract class BaseNodeFilter extends BaseProcessFilter
 {
     private $nodePaths = array();
@@ -30,7 +32,7 @@ abstract class BaseNodeFilter extends BaseProcessFilter
         $this->nodePaths[] = $nodePath;
     }
 
-    protected function createProcess(array $arguments = array())
+    protected function createProcess(array $arguments = array()): Process
     {
         $pb = parent::createProcess($arguments);
 
