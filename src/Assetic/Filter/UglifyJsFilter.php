@@ -97,31 +97,30 @@ class UglifyJsFilter extends BaseNodeFilter
      */
     public function filterDump(AssetInterface $asset)
     {
-        $pb = $this->createProcess(
-            $this->nodeBin
+        $args = $this->nodeBin
             ? array($this->nodeBin, $this->uglifyjsBin)
-            : array($this->uglifyjsBin)
-        );
+            : array($this->uglifyjsBin);
 
         if ($this->noCopyright) {
-            $pb->add('--no-copyright');
+            $args[] = '--no-copyright';
         }
 
         if ($this->beautify) {
-            $pb->add('--beautify');
+            $args[] = '--beautify';
         }
 
         if ($this->unsafe) {
-            $pb->add('--unsafe');
+            $args[] = '--unsafe';
         }
 
         if (false === $this->mangle) {
-            $pb->add('--no-mangle');
+            $args[] = '--no-mangle';
         }
 
         if ($this->defines) {
             foreach ($this->defines as $define) {
-                $pb->add('-d')->add($define);
+                $args[] = '-d';
+                $args[] = $define;
             }
         }
 
@@ -130,9 +129,11 @@ class UglifyJsFilter extends BaseNodeFilter
         $output = FilesystemUtils::createTemporaryFile('uglifyjs_out');
 
         file_put_contents($input, $asset->getContent());
-        $pb->add('-o')->add($output)->add($input);
+        $args[] = '-o';
+        $args[] = $output;
+        $args[] = $input;
 
-        $proc = $pb->getProcess();
+        $proc = $this->createProcess($args);
         $code = $proc->run();
         unlink($input);
 

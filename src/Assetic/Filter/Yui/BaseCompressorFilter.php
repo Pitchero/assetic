@@ -66,24 +66,27 @@ abstract class BaseCompressorFilter extends BaseProcessFilter
      */
     protected function compress($content, $type, $options = array())
     {
-        $pb = $this->createProcess(array($this->javaPath));
+        $args = array($this->javaPath);
 
         if (null !== $this->stackSize) {
-            $pb->add('-Xss'.$this->stackSize);
+            $args[] = '-Xss'.$this->stackSize;
         }
 
-        $pb->add('-jar')->add($this->jarPath);
+        $args[] = '-jar';
+        $args[] = $this->jarPath;
 
         foreach ($options as $option) {
-            $pb->add($option);
+            $args[] = $option;
         }
 
         if (null !== $this->charset) {
-            $pb->add('--charset')->add($this->charset);
+            $args[] = '--charset';
+            $args[] = $this->charset;
         }
 
         if (null !== $this->lineBreak) {
-            $pb->add('--line-break')->add($this->lineBreak);
+            $args[] = '--line-break';
+            $args[] = $this->lineBreak;
         }
 
         // input and output files
@@ -91,9 +94,14 @@ abstract class BaseCompressorFilter extends BaseProcessFilter
         $input = tempnam($tempDir, 'assetic_yui_input');
         $output = tempnam($tempDir, 'assetic_yui_output');
         file_put_contents($input, $content);
-        $pb->add('-o')->add($output)->add('--type')->add($type)->add($input);
 
-        $proc = $pb->getProcess();
+        $args[] = '-o';
+        $args[] = $output;
+        $args[] = '--type';
+        $args[] = $type;
+        $args[] = $input;
+
+        $proc = $this->createProcess($args);
         $code = $proc->run();
         unlink($input);
 

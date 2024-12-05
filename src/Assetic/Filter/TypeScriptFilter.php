@@ -34,9 +34,9 @@ class TypeScriptFilter extends BaseNodeFilter
 
     public function filterLoad(AssetInterface $asset)
     {
-        $pb = $this->createProcess($this->nodeBin
+        $args = $this->nodeBin
             ? array($this->nodeBin, $this->tscBin)
-            : array($this->tscBin));
+            : array($this->tscBin);
 
         if ($sourcePath = $asset->getSourcePath()) {
             $templateName = basename($sourcePath);
@@ -50,9 +50,11 @@ class TypeScriptFilter extends BaseNodeFilter
 
         file_put_contents($inputPath, $asset->getContent());
 
-        $pb->add($inputPath)->add('--out')->add($outputPath);
+        $args[] = $inputPath;
+        $args[] = '--out';
+        $args[] = $outputPath;
 
-        $proc = $pb->getProcess();
+        $proc = $this->createProcess($args);
         $code = $proc->run();
         unlink($inputPath);
         rmdir($inputDirPath);

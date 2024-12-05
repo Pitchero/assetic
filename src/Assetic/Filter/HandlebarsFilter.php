@@ -59,9 +59,9 @@ class HandlebarsFilter extends BaseNodeFilter
 
     public function filterLoad(AssetInterface $asset)
     {
-        $pb = $this->createProcess($this->nodeBin
+        $args = $this->nodeBin
             ? array($this->nodeBin, $this->handlebarsBin)
-            : array($this->handlebarsBin));
+            : array($this->handlebarsBin);
 
         if ($sourcePath = $asset->getSourcePath()) {
             $templateName = basename($sourcePath);
@@ -75,14 +75,16 @@ class HandlebarsFilter extends BaseNodeFilter
 
         file_put_contents($inputPath, $asset->getContent());
 
-        $pb->add($inputPath)->add('-f')->add($outputPath);
+        $args[] = $inputPath;
+        $args[] = '-f';
+        $args[] = $outputPath;
 
         if ($this->minimize) {
-            $pb->add('--min');
+            $args[] = '--min';
         }
 
         if ($this->simple) {
-            $pb->add('--simple');
+            $args[] = '--simple';
         }
 
         $prefix = '';
@@ -94,7 +96,8 @@ class HandlebarsFilter extends BaseNodeFilter
                 $namespace = $this->prefix . '.' . $namespace;
             }
 
-            $pb->add('-n')->add($namespace);
+            $args[] = '-n';
+            $args[] = $namespace;
 
             $splitNamespace = explode('.', $namespace);
             $connectedNamespace = array();
@@ -107,7 +110,7 @@ class HandlebarsFilter extends BaseNodeFilter
             }
         }
 
-        $process = $pb->getProcess();
+        $process = $this->createProcess($args);
         $returnCode = $process->run();
 
         unlink($inputPath);

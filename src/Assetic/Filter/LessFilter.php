@@ -137,15 +137,17 @@ EOF;
             $parserOptions['paths'][] = $loadPath;
         }
 
-        $pb = $this->createProcess();
+        $args = [];
 
-        $pb->add($this->nodeBin)->add($input = FilesystemUtils::createTemporaryFile('less'));
+        $args[] = $this->nodeBin;
+        $input = FilesystemUtils::createTemporaryFile('less');
+        $args[] = $input;
         file_put_contents($input, sprintf($format,
             json_encode($asset->getContent()),
             json_encode(array_merge($parserOptions, $this->treeOptions))
         ));
 
-        $proc = $pb->getProcess();
+        $proc = $this->createProcess($args);
         $code = $proc->run();
         unlink($input);
 

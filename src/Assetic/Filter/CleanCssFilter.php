@@ -241,92 +241,92 @@ class CleanCssFilter extends BaseNodeFilter
      */
     public function filterDump(AssetInterface $asset)
     {
-        $pb = $this->createProcess($this->nodeBin
+        $args = $this->nodeBin
             ? array($this->nodeBin, $this->cleanCssBin)
-            : array($this->cleanCssBin));
+            : array($this->cleanCssBin);
 
         if ($this->keepLineBreaks) {
-            $pb->add('--keep-line-breaks');
+            $args[] = '--keep-line-breaks';
         }
 
         if ($this->compatibility) {
-            $pb->add('--compatibility ' .$this->compatibility);
+            $args[] = '--compatibility ' . $this->compatibility;
         }
 
         if ($this->debug) {
-            $pb->add('--debug');
+            $args[] = '--debug';
         }
 
         if ($this->rootPath) {
-            $pb->add('--root ' .$this->rootPath);
+            $args[] = '--root ' . $this->rootPath;
         }
 
         if ($this->skipImport) {
-            $pb->add('--skip-import');
+            $args[] = '--skip-import';
         }
 
         if ($this->timeout) {
-            $pb->add('--timeout ' .$this->timeout);
+            $args[] = '--timeout ' . $this->timeout;
         }
 
         if ($this->roundingPrecision) {
-            $pb->add('--rounding-precision ' .$this->roundingPrecision);
+            $args[] = '--rounding-precision ' . $this->roundingPrecision;
         }
 
         if ($this->removeSpecialComments) {
-            $pb->add('--s0');
+            $args[] = '--s0';
         }
 
         if ($this->onlyKeepFirstSpecialComment) {
-            $pb->add('--s1');
+            $args[] = '--s1';
         }
 
         if ($this->semanticMerging) {
-            $pb->add('--semantic-merging');
+            $args[] = '--semantic-merging';
         }
 
         if ($this->skipAdvanced) {
-            $pb->add('--skip-advanced');
+            $args[] = '--skip-advanced';
         }
 
         if ($this->skipAggresiveMerging) {
-            $pb->add('--skip-aggressive-merging');
+            $args[] = '--skip-aggressive-merging';
         }
 
         if ($this->skipImportFrom) {
-            $pb->add('--skip-import-from ' .$this->skipImportFrom);
+            $args[] = '--skip-import-from ' . $this->skipImportFrom;
         }
 
         if ($this->mediaMerging) {
-            $pb->add('--skip-media-merging');
+            $args[] = '--skip-media-merging';
         }
 
         if ($this->skipRebase) {
-            $pb->add('--skip-rebase');
+            $args[] = '--skip-rebase';
         }
 
         if ($this->skipRestructuring) {
-            $pb->add('--skip-restructuring');
+            $args[] = '--skip-restructuring';
         }
 
         if ($this->skipShorthandCompacting) {
-            $pb->add('--skip-shorthand-compacting');
+            $args[] = '--skip-shorthand-compacting';
         }
 
         if ($this->sourceMap) {
-            $pb->add('--source-map');
+            $args[] = '--source-map';
         }
 
         if ($this->sourceMapInlineSources) {
-            $pb->add('--source-map-inline-sources');
+            $args[] = '--source-map-inline-sources';
         }
         // input and output files
         $input = tempnam(sys_get_temp_dir(), 'input');
 
         file_put_contents($input, $asset->getContent());
-        $pb->add($input);
+        $args[] = $input;
 
-        $proc = $pb->getProcess();
+        $proc = $this->createProcess($args);
         $code = $proc->run();
         unlink($input);
 

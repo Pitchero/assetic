@@ -111,65 +111,69 @@ class SassFilter extends BaseSassFilter
             $sassProcessArgs = array_merge(explode(' ', $this->rubyPath), $sassProcessArgs);
         }
 
-        $pb = $this->createProcess($sassProcessArgs);
-
         if ($dir = $asset->getSourceDirectory()) {
-            $pb->add('--load-path')->add($dir);
+            $sassProcessArgs[] = '--load-path';
+            $sassProcessArgs[] = $dir;
         }
 
         if ($this->unixNewlines) {
-            $pb->add('--unix-newlines');
+            $sassProcessArgs[] = '--unix-newlines';
         }
 
         if (true === $this->scss || (null === $this->scss && 'scss' == pathinfo($asset->getSourcePath(), PATHINFO_EXTENSION))) {
-            $pb->add('--scss');
+            $sassProcessArgs[] = '--scss';
         }
 
         if ($this->style) {
-            $pb->add('--style')->add($this->style);
+            $sassProcessArgs[] = '--style';
+            $sassProcessArgs[] = $this->style;
         }
 
         if ($this->precision) {
-            $pb->add('--precision')->add($this->precision);
+            $sassProcessArgs[] = '--precision';
+            $sassProcessArgs[] = $this->precision;
         }
 
         if ($this->quiet) {
-            $pb->add('--quiet');
+            $sassProcessArgs[] = '--quiet';
         }
 
         if ($this->debugInfo) {
-            $pb->add('--debug-info');
+            $sassProcessArgs[] = '--debug-info';
         }
 
         if ($this->lineNumbers) {
-            $pb->add('--line-numbers');
+            $sassProcessArgs[] = '--line-numbers';
         }
 
         if ($this->sourceMap) {
-            $pb->add('--sourcemap');
+            $sassProcessArgs[] = '--sourcemap';
         }
 
         foreach ($this->loadPaths as $loadPath) {
-            $pb->add('--load-path')->add($loadPath);
+            $sassProcessArgs[] = '--load-path';
+            $sassProcessArgs[] = $loadPath;
         }
 
         if ($this->cacheLocation) {
-            $pb->add('--cache-location')->add($this->cacheLocation);
+            $sassProcessArgs[] = '--cache-location';
+            $sassProcessArgs[] = $this->cacheLocation;
         }
 
         if ($this->noCache) {
-            $pb->add('--no-cache');
+            $sassProcessArgs[] = '--no-cache';
         }
 
         if ($this->compass) {
-            $pb->add('--compass');
+            $sassProcessArgs[] = '--compass';
         }
 
         // input
-        $pb->add($input = FilesystemUtils::createTemporaryFile('sass'));
+        $input = FilesystemUtils::createTemporaryFile('sass');
+        $sassProcessArgs[] = $input;
         file_put_contents($input, $asset->getContent());
 
-        $proc = $pb->getProcess();
+        $proc = $this->createProcess($sassProcessArgs);
         $code = $proc->run();
         unlink($input);
 

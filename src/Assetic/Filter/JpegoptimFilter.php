@@ -53,20 +53,21 @@ class JpegoptimFilter extends BaseProcessFilter
 
     public function filterDump(AssetInterface $asset)
     {
-        $pb = $this->createProcess(array($this->jpegoptimBin));
+        $args = array($this->jpegoptimBin);
 
         if ($this->stripAll) {
-            $pb->add('--strip-all');
+            $args[] = '--strip-all';
         }
 
         if ($this->max) {
-            $pb->add('--max='.$this->max);
+            $args[] = '--max='.$this->max;
         }
 
-        $pb->add($input = FilesystemUtils::createTemporaryFile('jpegoptim'));
+        $input = FilesystemUtils::createTemporaryFile('jpegoptim');
+        $args[] = $input;
         file_put_contents($input, $asset->getContent());
 
-        $proc = $pb->getProcess();
+        $proc = $this->createProcess($args);
         $proc->run();
 
         if (false !== strpos($proc->getOutput(), 'ERROR')) {

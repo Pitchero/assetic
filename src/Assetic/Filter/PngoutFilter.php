@@ -87,32 +87,34 @@ class PngoutFilter extends BaseProcessFilter
 
     public function filterDump(AssetInterface $asset)
     {
-        $pb = $this->createProcess(array($this->pngoutBin));
+        $args = array($this->pngoutBin);
 
         if (null !== $this->color) {
-            $pb->add('-c'.$this->color);
+            $args[] = '-c'.$this->color;
         }
 
         if (null !== $this->filter) {
-            $pb->add('-f'.$this->filter);
+            $args[] = '-f'.$this->filter;
         }
 
         if (null !== $this->strategy) {
-            $pb->add('-s'.$this->strategy);
+            $args[] = '-s'.$this->strategy;
         }
 
         if (null !== $this->blockSplitThreshold) {
-            $pb->add('-b'.$this->blockSplitThreshold);
+            $args[] = '-b'.$this->blockSplitThreshold;
         }
 
-        $pb->add($input = FilesystemUtils::createTemporaryFile('pngout_in'));
+        $input = FilesystemUtils::createTemporaryFile('pngout_in');
+        $args[] = $input;
         file_put_contents($input, $asset->getContent());
 
         $output = FilesystemUtils::createTemporaryFile('pngout_out');
         unlink($output);
-        $pb->add($output .= '.png');
+        $output .= '.png';
+        $args[] = $output;
 
-        $proc = $pb->getProcess();
+        $proc = $this->createProcess($args);
         $code = $proc->run();
 
         if (0 !== $code) {

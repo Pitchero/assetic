@@ -36,9 +36,9 @@ class EmberPrecompileFilter extends BaseNodeFilter
 
     public function filterLoad(AssetInterface $asset)
     {
-        $pb = $this->createProcess($this->nodeBin
+        $args = $this->nodeBin
             ? array($this->nodeBin, $this->emberBin)
-            : array($this->emberBin));
+            : array($this->emberBin);
 
         if ($sourcePath = $asset->getSourcePath()) {
             $templateName = basename($sourcePath);
@@ -52,9 +52,11 @@ class EmberPrecompileFilter extends BaseNodeFilter
 
         file_put_contents($inputPath, $asset->getContent());
 
-        $pb->add($inputPath)->add('-f')->add($outputPath);
+        $args[] = $inputPath;
+        $args[] = '-f';
+        $args[] = $outputPath;
 
-        $process = $pb->getProcess();
+        $process = $this->createProcess($args);
         $returnCode = $process->run();
 
         unlink($inputPath);

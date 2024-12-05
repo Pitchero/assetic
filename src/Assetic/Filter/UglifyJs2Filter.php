@@ -80,42 +80,43 @@ class UglifyJs2Filter extends BaseNodeFilter
 
     public function filterDump(AssetInterface $asset)
     {
-        $pb = $this->createProcess(
-            $this->nodeBin
+        $args = $this->nodeBin
             ? array($this->nodeBin, $this->uglifyjsBin)
-            : array($this->uglifyjsBin)
-        );
+            : array($this->uglifyjsBin);
 
         if ($this->compress) {
-            $pb->add('--compress');
+            $args[] = '--compress';
 
             if (is_string($this->compress) && !empty($this->compress)) {
-                $pb->add($this->compress);
+                $args[] = $this->compress;
             }
         }
 
         if ($this->beautify) {
-            $pb->add('--beautify');
+            $args[] = '--beautify';
         }
 
         if ($this->mangle) {
-            $pb->add('--mangle');
+            $args[] = '--mangle';
         }
 
         if ($this->screwIe8) {
-            $pb->add('--screw-ie8');
+            $args[] = '--screw-ie8';
         }
 
         if ($this->comments) {
-            $pb->add('--comments')->add(true === $this->comments ? 'all' : $this->comments);
+            $args[] = '--comments';
+            $args[] = true === $this->comments ? 'all' : $this->comments;
         }
 
         if ($this->wrap) {
-            $pb->add('--wrap')->add($this->wrap);
+            $args[] = '--wrap';
+            $args[] = $this->wrap;
         }
 
         if ($this->defines) {
-            $pb->add('--define')->add(implode(',', $this->defines));
+            $args[] = '--define';
+            $args[] = implode(',', $this->defines);
         }
 
         // input and output files
@@ -123,9 +124,11 @@ class UglifyJs2Filter extends BaseNodeFilter
         $output = FilesystemUtils::createTemporaryFile('uglifyjs2_out');
 
         file_put_contents($input, $asset->getContent());
-        $pb->add('-o')->add($output)->add($input);
+        $args[] = '-o';
+        $args[] = $output;
+        $args[] = $input;
 
-        $proc = $pb->getProcess();
+        $proc = $this->createProcess($args);
         $code = $proc->run();
         unlink($input);
 

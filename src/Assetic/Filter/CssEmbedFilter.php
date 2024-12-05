@@ -81,50 +81,57 @@ class CssEmbedFilter extends BaseProcessFilter implements DependencyExtractorInt
 
     public function filterDump(AssetInterface $asset)
     {
-        $pb = $this->createProcess(array(
+        $args = array(
             $this->javaPath,
             '-jar',
             $this->jarPath,
-        ));
+        );
 
         if (null !== $this->charset) {
-            $pb->add('--charset')->add($this->charset);
+            $args[] = '--charset';
+            $args[] = $this->charset;
         }
 
         if ($this->mhtml) {
-            $pb->add('--mhtml');
+            $args[] = '--mhtml';
         }
 
         if (null !== $this->mhtmlRoot) {
-            $pb->add('--mhtmlroot')->add($this->mhtmlRoot);
+            $args[] = '--mhtmlroot';
+            $args[] = $this->mhtmlRoot;
         }
 
         // automatically define root if not already defined
         if (null === $this->root) {
             if ($dir = $asset->getSourceDirectory()) {
-                $pb->add('--root')->add($dir);
+                $args[] = '--root';
+                $args[] = $dir;
             }
         } else {
-            $pb->add('--root')->add($this->root);
+            $args[] = '--root';
+            $args[] = $this->root;
         }
 
         if ($this->skipMissing) {
-            $pb->add('--skip-missing');
+            $args[] = '--skip-missing';
         }
 
         if (null !== $this->maxUriLength) {
-            $pb->add('--max-uri-length')->add($this->maxUriLength);
+            $args[] = '--max-uri-length';
+            $args[] = $this->maxUriLength;
         }
 
         if (null !== $this->maxImageSize) {
-            $pb->add('--max-image-size')->add($this->maxImageSize);
+            $args[] = '--max-image-size';
+            $args[] = $this->maxImageSize;
         }
 
         // input
-        $pb->add($input = FilesystemUtils::createTemporaryFile('cssembed'));
+        $input = FilesystemUtils::createTemporaryFile('cssembed');
+        $args[] = $input;
         file_put_contents($input, $asset->getContent());
 
-        $proc = $pb->getProcess();
+        $proc = $this->createProcess($args);
         $code = $proc->run();
         unlink($input);
 

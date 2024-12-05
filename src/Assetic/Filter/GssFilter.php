@@ -84,48 +84,55 @@ class GssFilter extends BaseProcessFilter
     {
         $cleanup = array();
 
-        $pb = $this->createProcess(array(
+        $args = array(
             $this->javaPath,
             '-jar',
             $this->jarPath,
-        ));
+        );
 
         if (null !== $this->allowUnrecognizedFunctions) {
-            $pb->add('--allow-unrecognized-functions');
+            $args[] = '--allow-unrecognized-functions';
         }
 
         if (null !== $this->allowedNonStandardFunctions) {
-            $pb->add('--allowed_non_standard_functions')->add($this->allowedNonStandardFunctions);
+            $args[] = '--allowed_non_standard_functions';
+            $args[] = $this->allowedNonStandardFunctions;
         }
 
         if (null !== $this->copyrightNotice) {
-            $pb->add('--copyright-notice')->add($this->copyrightNotice);
+            $args[] = '--copyright-notice';
+            $args[] = $this->copyrightNotice;
         }
 
         if (null !== $this->define) {
-            $pb->add('--define')->add($this->define);
+            $args[] = '--define';
+            $args[] = $this->define;
         }
 
         if (null !== $this->gssFunctionMapProvider) {
-            $pb->add('--gss-function-map-provider')->add($this->gssFunctionMapProvider);
+            $args[] = '--gss-function-map-provider';
+            $args[] = $this->gssFunctionMapProvider;
         }
 
         if (null !== $this->inputOrientation) {
-            $pb->add('--input-orientation')->add($this->inputOrientation);
+            $args[] = '--input-orientation';
+            $args[] = $this->inputOrientation;
         }
 
         if (null !== $this->outputOrientation) {
-            $pb->add('--output-orientation')->add($this->outputOrientation);
+            $args[] = '--output-orientation';
+            $args[] = $this->outputOrientation;
         }
 
         if (null !== $this->prettyPrint) {
-            $pb->add('--pretty-print');
+            $args[] = '--pretty-print';
         }
 
-        $pb->add($cleanup[] = $input = FilesystemUtils::createTemporaryFile('gss'));
+        $cleanup[] = $input = FilesystemUtils::createTemporaryFile('gss');
+        $args[] = $input;
         file_put_contents($input, $asset->getContent());
 
-        $proc = $pb->getProcess();
+        $proc = $this->createProcess($args);
         $code = $proc->run();
         array_map('unlink', $cleanup);
 
