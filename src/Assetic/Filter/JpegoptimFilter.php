@@ -53,7 +53,7 @@ class JpegoptimFilter extends BaseProcessFilter
 
     public function filterDump(AssetInterface $asset)
     {
-        $pb = $this->createProcessBuilder(array($this->jpegoptimBin));
+        $pb = $this->createProcess(array($this->jpegoptimBin));
 
         if ($this->stripAll) {
             $pb->add('--strip-all');

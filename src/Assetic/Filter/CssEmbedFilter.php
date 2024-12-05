@@ -81,7 +81,7 @@ class CssEmbedFilter extends BaseProcessFilter implements DependencyExtractorInt
 
     public function filterDump(AssetInterface $asset)
     {
-        $pb = $this->createProcessBuilder(array(
+        $pb = $this->createProcess(array(
             $this->javaPath,
             '-jar',
             $this->jarPath,

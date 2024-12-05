@@ -84,7 +84,7 @@ class GssFilter extends BaseProcessFilter
     {
         $cleanup = array();
 
-        $pb = $this->createProcessBuilder(array(
+        $pb = $this->createProcess(array(
             $this->javaPath,
             '-jar',
             $this->jarPath,

@@ -57,7 +57,7 @@ class AutoprefixerFilter extends BaseNodeFilter
     public function filterLoad(AssetInterface $asset)
     {
         $input = $asset->getContent();
-        $pb = $this->createProcessBuilder(array($this->autoprefixerBin));
+        $pb = $this->createProcess(array($this->autoprefixerBin));
 
         $pb->setInput($input);
         if ($this->browsers) {

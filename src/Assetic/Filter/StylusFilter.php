@@ -91,7 +91,7 @@ EOF;
             $parserOptions['compress'] = $this->compress;
         }
 
-        $pb = $this->createProcessBuilder();
+        $pb = $this->createProcess();
 
         $pb->add($this->nodeBin)->add($input = FilesystemUtils::createTemporaryFile('stylus'));
         file_put_contents($input, sprintf($format,

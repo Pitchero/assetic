@@ -36,7 +36,7 @@ class DartFilter extends BaseProcessFilter
 
         file_put_contents($input, $asset->getContent());
 
-        $pb = $this->createProcessBuilder()
+        $pb = $this->createProcess()
             ->add($this->dartBin)
             ->add('-o'.$output)
             ->add($input)

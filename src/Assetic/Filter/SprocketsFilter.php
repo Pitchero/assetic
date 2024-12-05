@@ -103,7 +103,7 @@ EOF;
             $more
         ));
 
-        $pb = $this->createProcessBuilder(array(
+        $pb = $this->createProcess(array(
             $this->rubyBin,
             $input,
         ));

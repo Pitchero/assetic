@@ -12,6 +12,7 @@
 namespace Assetic\Extension\Twig;
 
 use Assetic\Factory\Resource\ResourceInterface;
+use Twig\Error\LoaderError;
 
 /**
  * A Twig template resource.
@@ -35,7 +36,7 @@ class TwigResource implements ResourceInterface
             return method_exists($this->loader, 'getSourceContext')
                 ? $this->loader->getSourceContext($this->name)->getCode()
                 : $this->loader->getSource($this->name);
-        } catch (\Twig_Error_Loader $e) {
+        } catch (LoaderError $e) {
             return '';
         }
     }
@@ -44,7 +45,7 @@ class TwigResource implements ResourceInterface
     {
         try {
             return $this->loader->isFresh($this->name, $timestamp);
-        } catch (\Twig_Error_Loader $e) {
+        } catch (LoaderError $e) {
             return false;
         }
     }

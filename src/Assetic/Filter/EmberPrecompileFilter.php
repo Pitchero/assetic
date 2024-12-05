@@ -36,7 +36,7 @@ class EmberPrecompileFilter extends BaseNodeFilter
 
     public function filterLoad(AssetInterface $asset)
     {
-        $pb = $this->createProcessBuilder($this->nodeBin
+        $pb = $this->createProcess($this->nodeBin
             ? array($this->nodeBin, $this->emberBin)
             : array($this->emberBin));
 

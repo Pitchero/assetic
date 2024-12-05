@@ -46,7 +46,7 @@ class RooleFilter extends BaseNodeFilter implements DependencyExtractorInterface
 
         file_put_contents($input, $asset->getContent());
 
-        $pb = $this->createProcessBuilder($this->nodeBin
+        $pb = $this->createProcess($this->nodeBin
             ? array($this->nodeBin, $this->rooleBin)
             : array($this->rooleBin));
 

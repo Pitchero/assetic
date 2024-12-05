@@ -241,7 +241,7 @@ class CleanCssFilter extends BaseNodeFilter
      */
     public function filterDump(AssetInterface $asset)
     {
-        $pb = $this->createProcessBuilder($this->nodeBin
+        $pb = $this->createProcess($this->nodeBin
             ? array($this->nodeBin, $this->cleanCssBin)
             : array($this->cleanCssBin));
 

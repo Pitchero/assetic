@@ -137,7 +137,7 @@ EOF;
             $parserOptions['paths'][] = $loadPath;
         }
 
-        $pb = $this->createProcessBuilder();
+        $pb = $this->createProcess();
 
         $pb->add($this->nodeBin)->add($input = FilesystemUtils::createTemporaryFile('less'));
         file_put_contents($input, sprintf($format,

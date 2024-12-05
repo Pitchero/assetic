@@ -66,7 +66,7 @@ abstract class BaseCompressorFilter extends BaseProcessFilter
      */
     protected function compress($content, $type, $options = array())
     {
-        $pb = $this->createProcessBuilder(array($this->javaPath));
+        $pb = $this->createProcess(array($this->javaPath));
 
         if (null !== $this->stackSize) {
             $pb->add('-Xss'.$this->stackSize);

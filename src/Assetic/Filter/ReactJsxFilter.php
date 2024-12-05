@@ -25,7 +25,7 @@ class ReactJsxFilter extends BaseNodeFilter
 
     public function filterLoad(AssetInterface $asset)
     {
-        $builder = $this->createProcessBuilder($this->nodeBin
+        $builder = $this->createProcess($this->nodeBin
             ? array($this->nodeBin, $this->jsxBin)
             : array($this->jsxBin));
 

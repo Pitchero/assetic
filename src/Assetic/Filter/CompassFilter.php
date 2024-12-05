@@ -202,7 +202,7 @@ class CompassFilter extends BaseSassFilter
             $compassProcessArgs = array_merge(explode(' ', $this->rubyPath), $compassProcessArgs);
         }
 
-        $pb = $this->createProcessBuilder($compassProcessArgs);
+        $pb = $this->createProcess($compassProcessArgs);
 
         if ($this->force) {
             $pb->add('--force');
@@ -340,7 +340,7 @@ class CompassFilter extends BaseSassFilter
 
         if ($this->homeEnv) {
             // it's not really usefull but... https://github.com/chriseppstein/compass/issues/376
-            $pb->setEnv('HOME', FilesystemUtils::getTemporaryDirectory());
+            $pb->setEnv(['HOME' => FilesystemUtils::getTemporaryDirectory()]);
             $this->mergeEnv($pb);
         }
 

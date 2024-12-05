@@ -80,7 +80,7 @@ class UglifyJs2Filter extends BaseNodeFilter
 
     public function filterDump(AssetInterface $asset)
     {
-        $pb = $this->createProcessBuilder(
+        $pb = $this->createProcess(
             $this->nodeBin
             ? array($this->nodeBin, $this->uglifyjsBin)
             : array($this->uglifyjsBin)
