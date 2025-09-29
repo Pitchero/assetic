@@ -14,7 +14,7 @@
         }
     ],
     "require": {
-        "php": ">=7.2",
+        "php": ">=7.4",
         "symfony/process": "4.x"
     },
     "conflict": {
@@ -32,7 +32,8 @@
         "ptachoire/cssembed": "~1.0",
         "symfony/phpunit-bridge": "~2.7|~3.0",
         "twig/twig": "~1.23|~2.0",
-        "yfix/packager": "dev-master"
+        "yfix/packager": "dev-master",
+        "rector/rector": "dev-main"
     },
     "suggest": {
         "twig/twig": "Assetic provides the integration with the Twig templating engine",

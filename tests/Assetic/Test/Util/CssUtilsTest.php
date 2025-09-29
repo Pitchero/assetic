@@ -19,12 +19,12 @@ class CssUtilsTest extends \PHPUnit_Framework_TestCase
     {
         $content = 'body { background: url(../images/bg.gif); }';
 
-        $matches = array();
-        $actual = CssUtils::filterUrls($content, function ($match) use (&$matches) {
+        $matches = [];
+        $actual = CssUtils::filterUrls($content, function ($match) use (&$matches): void {
             $matches[] = $match['url'];
         });
 
-        $this->assertEquals(array('../images/bg.gif'), $matches);
+        $this->assertEquals(['../images/bg.gif'], $matches);
     }
 
     public function testExtractImports()
@@ -40,11 +40,11 @@ class CssUtilsTest extends \PHPUnit_Framework_TestCase
 body { background: url(../images/bg.gif); }
 CSS;
 
-        $expected = array('common.css', 'custom.css');
+        $expected = ['common.css', 'custom.css'];
         $actual = CssUtils::extractImports($content);
 
         $this->assertEquals($expected, array_intersect($expected, $actual), '::extractImports() returns all expected URLs');
-        $this->assertEquals(array(), array_diff($actual, $expected), '::extractImports() does not return unexpected URLs');
+        $this->assertEquals([], array_diff($actual, $expected), '::extractImports() does not return unexpected URLs');
     }
 
     public function testFilterCommentless()

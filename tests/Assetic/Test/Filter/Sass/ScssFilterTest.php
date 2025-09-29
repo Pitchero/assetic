@@ -91,10 +91,10 @@ EOF;
 
 EOF;
 
-        $this->filter->setLoadPaths(array(
+        $this->filter->setLoadPaths([
             __DIR__.'/../fixtures/sass',
             __DIR__.'/../fixtures/sass/import_path',
-        ));
+        ]);
 
         $asset = new StringAsset('@import "main"; @import "import"; .bar {color: $red}');
         $asset->load();

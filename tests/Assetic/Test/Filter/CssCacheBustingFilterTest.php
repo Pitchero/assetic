@@ -37,27 +37,27 @@ class CssCacheBustingFilterTest extends \PHPUnit_Framework_TestCase
 
     public function provideUrls()
     {
-        return array(
+        return [
             // url variants
-            array('v123', '%s?%s', 'body { background: url(%s); }', 'css/body.css', 'css/body.css?v123'),
-            array('123', '%s?version=%s', 'body { background: url("%s"); }', 'css/body.css', 'css/body.css?version=123'),
-            array('bar', '%s?foo=%s', 'body { background: url(\'%s\'); }', 'css/body.css', 'css/body.css?foo=bar'),
+            ['v123', '%s?%s', 'body { background: url(%s); }', 'css/body.css', 'css/body.css?v123'],
+            ['123', '%s?version=%s', 'body { background: url("%s"); }', 'css/body.css', 'css/body.css?version=123'],
+            ['bar', '%s?foo=%s', 'body { background: url(\'%s\'); }', 'css/body.css', 'css/body.css?foo=bar'],
 
             // @import variants
-            array('v123', '%s?%s', '@import "%s";', 'css/imports.css', 'css/imports.css?v123'),
-            array('123', '%s?version=%s', '@import url(%s);', 'css/imports.css', 'css/imports.css?version=123'),
-            array('bar', '%s?foo=%s', '@import url("%s");', 'css/imports.css', 'css/imports.css?foo=bar'),
-            array('v123', '%s?%s', '@import url(\'%s\');', 'css/imports.css', 'css/imports.css?v123'),
+            ['v123', '%s?%s', '@import "%s";', 'css/imports.css', 'css/imports.css?v123'],
+            ['123', '%s?version=%s', '@import url(%s);', 'css/imports.css', 'css/imports.css?version=123'],
+            ['bar', '%s?foo=%s', '@import url("%s");', 'css/imports.css', 'css/imports.css?foo=bar'],
+            ['v123', '%s?%s', '@import url(\'%s\');', 'css/imports.css', 'css/imports.css?v123'],
 
             // IE AlphaImageLoader filter
-            array('v123', '%s?%s', '.fix { filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src=\'%s\'); }', 'css/ie.css', 'css/ie.css?v123'),
+            ['v123', '%s?%s', '.fix { filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src=\'%s\'); }', 'css/ie.css', 'css/ie.css?v123'],
 
             // data url
-            array('v1', '%s?%s', '.grayscale { filter: url("%s"); }',
+            ['v1', '%s?%s', '.grayscale { filter: url("%s"); }',
                 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\'/></filter></svg>#grayscale',
                 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\'/></filter></svg>#grayscale'
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -78,28 +78,28 @@ class CssCacheBustingFilterTest extends \PHPUnit_Framework_TestCase
 
     public function provideMultipleUrls()
     {
-        return array(
+        return [
             // url variants
-            array('v123', '%s?%s', 'body { background: url(%s); background: url(%s); }', 'css/body.css', 'css/body.css?v123', 'css/body.css', 'css/body.css?v123'),
-            array('v123', '%s?%s', "body { background: url(%s); \nbackground: url('%s'); }", 'css/body.css', 'css/body.css?v123', 'css/body.css', 'css/body.css?v123'),
-            array('v123', '%s?%s', 'body { background: url(%s); background: url(%s); }', 'css/body.css', 'css/body.css?v123', 'css/foo.css', 'css/foo.css?v123'),
-            array('v123', '%s?%s', "body { background: url(%s); \nbackground: url('%s'); }", 'css/body.css', 'css/body.css?v123', 'css/foo.css', 'css/foo.css?v123'),
+            ['v123', '%s?%s', 'body { background: url(%s); background: url(%s); }', 'css/body.css', 'css/body.css?v123', 'css/body.css', 'css/body.css?v123'],
+            ['v123', '%s?%s', "body { background: url(%s); \nbackground: url('%s'); }", 'css/body.css', 'css/body.css?v123', 'css/body.css', 'css/body.css?v123'],
+            ['v123', '%s?%s', 'body { background: url(%s); background: url(%s); }', 'css/body.css', 'css/body.css?v123', 'css/foo.css', 'css/foo.css?v123'],
+            ['v123', '%s?%s', "body { background: url(%s); \nbackground: url('%s'); }", 'css/body.css', 'css/body.css?v123', 'css/foo.css', 'css/foo.css?v123'],
 
             // @import variants
-            array('v123', '%s?%s', '@import "%s"; @import "%s";', 'css/imports.css', 'css/imports.css?v123', 'css/imports.css', 'css/imports.css?v123'),
-            array('v123', '%s?%s', "@import \"%s\"; \n@import \"%s\";", 'css/imports.css', 'css/imports.css?v123', 'css/imports.css', 'css/imports.css?v123'),
-            array('v123', '%s?%s', '@import "%s"; @import "%s";', 'css/imports.css', 'css/imports.css?v123', 'css/foo.css', 'css/foo.css?v123'),
-            array('v123', '%s?%s', "@import \"%s\"; \n@import \"%s\";", 'css/imports.css', 'css/imports.css?v123', 'css/foo.css', 'css/foo.css?v123'),
-            array('bar', '%s?foo=%s', '@import url("%s"); @import url("%s");', 'css/imports.css', 'css/imports.css?foo=bar', 'css/imports.css', 'css/imports.css?foo=bar'),
-            array('bar', '%s?foo=%s', "@import url(\"%s\"); \n@import url(\"%s\");", 'css/imports.css', 'css/imports.css?foo=bar', 'css/imports.css', 'css/imports.css?foo=bar'),
-            array('bar', '%s?foo=%s', '@import url("%s"); @import url("%s");', 'css/imports.css', 'css/imports.css?foo=bar', 'css/foo.css', 'css/foo.css?foo=bar'),
-            array('bar', '%s?foo=%s', "@import url(\"%s\"); \n@import url(\"%s\");", 'css/imports.css', 'css/imports.css?foo=bar', 'css/foo.css', 'css/foo.css?foo=bar'),
+            ['v123', '%s?%s', '@import "%s"; @import "%s";', 'css/imports.css', 'css/imports.css?v123', 'css/imports.css', 'css/imports.css?v123'],
+            ['v123', '%s?%s', "@import \"%s\"; \n@import \"%s\";", 'css/imports.css', 'css/imports.css?v123', 'css/imports.css', 'css/imports.css?v123'],
+            ['v123', '%s?%s', '@import "%s"; @import "%s";', 'css/imports.css', 'css/imports.css?v123', 'css/foo.css', 'css/foo.css?v123'],
+            ['v123', '%s?%s', "@import \"%s\"; \n@import \"%s\";", 'css/imports.css', 'css/imports.css?v123', 'css/foo.css', 'css/foo.css?v123'],
+            ['bar', '%s?foo=%s', '@import url("%s"); @import url("%s");', 'css/imports.css', 'css/imports.css?foo=bar', 'css/imports.css', 'css/imports.css?foo=bar'],
+            ['bar', '%s?foo=%s', "@import url(\"%s\"); \n@import url(\"%s\");", 'css/imports.css', 'css/imports.css?foo=bar', 'css/imports.css', 'css/imports.css?foo=bar'],
+            ['bar', '%s?foo=%s', '@import url("%s"); @import url("%s");', 'css/imports.css', 'css/imports.css?foo=bar', 'css/foo.css', 'css/foo.css?foo=bar'],
+            ['bar', '%s?foo=%s', "@import url(\"%s\"); \n@import url(\"%s\");", 'css/imports.css', 'css/imports.css?foo=bar', 'css/foo.css', 'css/foo.css?foo=bar'],
 
             // IE AlphaImageLoader filter
-            array('v123', '%s?%s', '.fix { filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src=\'%s\'); filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src=\'%s\'); }', 'css/ie.css', 'css/ie.css?v123', 'css/ie.css', 'css/ie.css?v123'),
-            array('v123', '%s?%s', ".fix { filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='%s'); \nfilter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='%s'); }", 'css/ie.css', 'css/ie.css?v123', 'css/ie.css', 'css/ie.css?v123'),
-            array('v123', '%s?%s', '.fix { filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src=\'%s\'); filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src=\'%s\'); }', 'css/ie.css', 'css/ie.css?v123', 'css/foo.css', 'css/foo.css?v123'),
-            array('v123', '%s?%s', ".fix { filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='%s'); \nfilter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='%s'); }", 'css/ie.css', 'css/ie.css?v123', 'css/foo.css', 'css/foo.css?v123'),
-        );
+            ['v123', '%s?%s', '.fix { filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src=\'%s\'); filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src=\'%s\'); }', 'css/ie.css', 'css/ie.css?v123', 'css/ie.css', 'css/ie.css?v123'],
+            ['v123', '%s?%s', ".fix { filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='%s'); \nfilter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='%s'); }", 'css/ie.css', 'css/ie.css?v123', 'css/ie.css', 'css/ie.css?v123'],
+            ['v123', '%s?%s', '.fix { filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src=\'%s\'); filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src=\'%s\'); }', 'css/ie.css', 'css/ie.css?v123', 'css/foo.css', 'css/foo.css?v123'],
+            ['v123', '%s?%s', ".fix { filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='%s'); \nfilter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='%s'); }", 'css/ie.css', 'css/ie.css?v123', 'css/foo.css', 'css/foo.css?v123'],
+        ];
     }
 }

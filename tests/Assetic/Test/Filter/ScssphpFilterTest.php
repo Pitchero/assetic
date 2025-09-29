@@ -23,7 +23,7 @@ class ScssphpFilterTest extends \PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        if (!class_exists('Leafo\ScssPhp\Compiler')) {
+        if (!class_exists(\Leafo\ScssPhp\Compiler::class)) {
             $this->markTestSkipped('leafo/scssphp is not installed');
         }
     }
@@ -119,7 +119,7 @@ EOF;
         $asset->load();
 
         $filter = $this->getFilter();
-        $filter->registerFunction('bar',function () { return 'red';});
+        $filter->registerFunction('bar',fn() => 'red');
         $filter->filterLoad($asset);
 
         $this->assertContains('color: red', $asset->getContent(), 'custom function can be registered');
@@ -131,7 +131,7 @@ EOF;
         $actual->load();
 
         $filter = $this->getFilter();
-        $filter->setFormatter('Leafo\ScssPhp\Formatter\Compressed');
+        $filter->setFormatter(\Leafo\ScssPhp\Formatter\Compressed::class);
         $filter->filterLoad($actual);
 
         $this->assertRegExp(
@@ -185,7 +185,7 @@ EOF;
     public function testSetVariables()
     {
         $filter = $this->getFilter();
-        $filter->setVariables(array('color' => 'red'));
+        $filter->setVariables(['color' => 'red']);
 
         $asset = new StringAsset("#test { color: \$color; }");
         $asset->load();

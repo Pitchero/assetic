@@ -46,7 +46,7 @@ class CompassFilter extends BaseSassFilter
     private $relativeAssets;
 
     // compass configuration file options
-    private $plugins = array();
+    private $plugins = [];
     private $httpPath;
     private $httpImagesPath;
     private $httpFontsPath;
@@ -191,13 +191,13 @@ class CompassFilter extends BaseSassFilter
             $loadPaths[] = $dir;
         }
 
-        $tempDir = $this->cacheLocation ? $this->cacheLocation : FilesystemUtils::getTemporaryDirectory();
+        $tempDir = $this->cacheLocation ?: FilesystemUtils::getTemporaryDirectory();
 
-        $compassProcessArgs = array(
+        $compassProcessArgs = [
             $this->compassPath,
             'compile',
             $tempDir,
-        );
+        ];
         if (null !== $this->rubyPath) {
             $compassProcessArgs = array_merge(explode(' ', $this->rubyPath), $compassProcessArgs);
         }
@@ -246,7 +246,7 @@ class CompassFilter extends BaseSassFilter
         }
 
         // options in config file
-        $optionsConfig = array();
+        $optionsConfig = [];
 
         if (!empty($loadPaths)) {
             $optionsConfig['additional_import_paths'] = $loadPaths;
@@ -294,7 +294,7 @@ class CompassFilter extends BaseSassFilter
 
         // options in configuration file
         if (count($optionsConfig)) {
-            $config = array();
+            $config = [];
             foreach ($this->plugins as $plugin) {
                 $config[] = sprintf("require '%s'", addcslashes($plugin, '\\'));
             }
@@ -378,7 +378,7 @@ class CompassFilter extends BaseSassFilter
 
     private function formatArrayToRuby($array)
     {
-        $output = array();
+        $output = [];
 
         // does we have an associative array ?
         if (count(array_filter(array_keys($array), "is_numeric")) != count($array)) {
@@ -387,7 +387,7 @@ class CompassFilter extends BaseSassFilter
             }
             $output = "{\n".implode(",\n", $output)."\n}";
         } else {
-            foreach ($array as $name => $value) {
+            foreach ($array as $value) {
                 $output[] = sprintf('    "%s"', addcslashes($value, '\\'));
             }
             $output = "[\n".implode(",\n", $output)."\n]";

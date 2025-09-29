@@ -21,24 +21,24 @@ class AssetCollectionTest extends \PHPUnit_Framework_TestCase
     public function testInterface()
     {
         $coll = new AssetCollection();
-        $this->assertInstanceOf('Assetic\\Asset\\AssetInterface', $coll, 'AssetCollection implements AssetInterface');
+        $this->assertInstanceOf(\Assetic\Asset\AssetInterface::class, $coll, 'AssetCollection implements AssetInterface');
     }
 
     public function testLoadFilter()
     {
-        $filter = $this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock();
+        $filter = $this->getMockBuilder(\Assetic\Filter\FilterInterface::class)->getMock();
         $filter->expects($this->once())->method('filterLoad');
 
-        $coll = new AssetCollection(array(new StringAsset('')), array($filter));
+        $coll = new AssetCollection([new StringAsset('')], [$filter]);
         $coll->load();
     }
 
     public function testDumpFilter()
     {
-        $filter = $this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock();
+        $filter = $this->getMockBuilder(\Assetic\Filter\FilterInterface::class)->getMock();
         $filter->expects($this->once())->method('filterDump');
 
-        $coll = new AssetCollection(array(new StringAsset('')), array($filter));
+        $coll = new AssetCollection([new StringAsset('')], [$filter]);
         $coll->dump();
     }
 
@@ -47,16 +47,16 @@ class AssetCollectionTest extends \PHPUnit_Framework_TestCase
         $content = 'foobar';
 
         $count = 0;
-        $matches = array();
-        $filter = new CallablesFilter(function ($asset) use ($content, &$matches, &$count) {
+        $matches = [];
+        $filter = new CallablesFilter(function ($asset) use ($content, &$matches, &$count): void {
             ++$count;
             if ($content == $asset->getContent()) {
                 $matches[] = $asset;
             }
         });
 
-        $innerColl = new AssetCollection(array(new StringAsset($content)));
-        $outerColl = new AssetCollection(array($innerColl), array($filter));
+        $innerColl = new AssetCollection([new StringAsset($content)]);
+        $outerColl = new AssetCollection([$innerColl], [$filter]);
         $outerColl->load();
 
         $this->assertEquals(1, count($matches), '->load() applies filters to leaves');
@@ -67,25 +67,25 @@ class AssetCollectionTest extends \PHPUnit_Framework_TestCase
     {
         $asset = new StringAsset('asset');
         $nestedAsset = new StringAsset('nested');
-        $innerColl = new AssetCollection(array($nestedAsset));
+        $innerColl = new AssetCollection([$nestedAsset]);
 
-        $contents = array();
-        $filter = new CallablesFilter(function ($asset) use (&$contents) {
+        $contents = [];
+        $filter = new CallablesFilter(function ($asset) use (&$contents): void {
             $contents[] = $asset->getContent();
         });
 
-        $coll = new AssetCollection(array($asset, $innerColl), array($filter));
+        $coll = new AssetCollection([$asset, $innerColl], [$filter]);
         $coll->load();
 
-        $this->assertEquals(array('asset', 'nested'), $contents, '->load() iterates over multiple levels');
+        $this->assertEquals(['asset', 'nested'], $contents, '->load() iterates over multiple levels');
     }
 
     public function testLoadDedupBySourceUrl()
     {
-        $asset1 = new StringAsset('asset', array(), '/some/dir', 'foo.bar');
-        $asset2 = new StringAsset('asset', array(), '/some/dir', 'foo.bar');
+        $asset1 = new StringAsset('asset', [], '/some/dir', 'foo.bar');
+        $asset2 = new StringAsset('asset', [], '/some/dir', 'foo.bar');
 
-        $coll = new AssetCollection(array($asset1, $asset2));
+        $coll = new AssetCollection([$asset1, $asset2]);
         $coll->load();
 
         $this->assertEquals('asset', $coll->getContent(), '->load() detects duplicate assets based on source URL');
@@ -95,7 +95,7 @@ class AssetCollectionTest extends \PHPUnit_Framework_TestCase
     {
         $asset = new StringAsset('foo');
 
-        $coll = new AssetCollection(array($asset, $asset));
+        $coll = new AssetCollection([$asset, $asset]);
         $coll->load();
 
         $this->assertEquals('foo', $coll->getContent(), '->load() detects duplicate assets based on strict equality');
@@ -103,10 +103,10 @@ class AssetCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testDumpDedupBySourceUrl()
     {
-        $asset1 = new StringAsset('asset', array(), '/some/dir', 'foo.bar');
-        $asset2 = new StringAsset('asset', array(), '/some/dir', 'foo.bar');
+        $asset1 = new StringAsset('asset', [], '/some/dir', 'foo.bar');
+        $asset2 = new StringAsset('asset', [], '/some/dir', 'foo.bar');
 
-        $coll = new AssetCollection(array($asset1, $asset2));
+        $coll = new AssetCollection([$asset1, $asset2]);
         $coll->load();
 
         $this->assertEquals('asset', $coll->dump(), '->dump() detects duplicate assets based on source URL');
@@ -116,7 +116,7 @@ class AssetCollectionTest extends \PHPUnit_Framework_TestCase
     {
         $asset = new StringAsset('foo');
 
-        $coll = new AssetCollection(array($asset, $asset));
+        $coll = new AssetCollection([$asset, $asset]);
         $coll->load();
 
         $this->assertEquals('foo', $coll->dump(), '->dump() detects duplicate assets based on strict equality');
@@ -125,7 +125,7 @@ class AssetCollectionTest extends \PHPUnit_Framework_TestCase
     public function testIterationFilters()
     {
         $count = 0;
-        $filter = new CallablesFilter(function () use (&$count) { ++$count; });
+        $filter = new CallablesFilter(function () use (&$count): void { ++$count; });
 
         $coll = new AssetCollection();
         $coll->add(new StringAsset(''));
@@ -151,10 +151,10 @@ class AssetCollectionTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetLastModified($timestamps, $expected)
     {
-        $assets = array();
+        $assets = [];
 
         for ($i = 0; $i < count($timestamps); $i++) {
-            $asset = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
+            $asset = $this->getMockBuilder(\Assetic\Asset\AssetInterface::class)->getMock();
             $asset->expects($this->once())
                 ->method('getLastModified')
                 ->will($this->returnValue($timestamps[$i]));
@@ -168,11 +168,11 @@ class AssetCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testGetLastModifiedWithValues()
     {
-        $vars = array('locale');
-        $asset = new FileAsset(__DIR__.'/../Fixture/messages.{locale}.js', array(), null, null, $vars);
+        $vars = ['locale'];
+        $asset = new FileAsset(__DIR__.'/../Fixture/messages.{locale}.js', [], null, null, $vars);
 
-        $coll = new AssetCollection(array($asset), array(), null, $vars);
-        $coll->setValues(array('locale' => 'en'));
+        $coll = new AssetCollection([$asset], [], null, $vars);
+        $coll->setValues(['locale' => 'en']);
         try {
             $coll->getLastModified();
         } catch (\InvalidArgumentException $e) {
@@ -182,24 +182,24 @@ class AssetCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function getTimestampsAndExpected()
     {
-        return array(
-            array(array(1, 2, 3), 3),
-            array(array(5, 4, 3), 5),
-            array(array(3, 8, 5), 8),
-            array(array(3, 8, null), 8),
-        );
+        return [
+            [[1, 2, 3], 3],
+            [[5, 4, 3], 5],
+            [[3, 8, 5], 8],
+            [[3, 8, null], 8],
+        ];
     }
 
     public function testRecursiveIteration()
     {
-        $asset1 = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
-        $asset2 = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
-        $asset3 = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
-        $asset4 = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
+        $asset1 = $this->getMockBuilder(\Assetic\Asset\AssetInterface::class)->getMock();
+        $asset2 = $this->getMockBuilder(\Assetic\Asset\AssetInterface::class)->getMock();
+        $asset3 = $this->getMockBuilder(\Assetic\Asset\AssetInterface::class)->getMock();
+        $asset4 = $this->getMockBuilder(\Assetic\Asset\AssetInterface::class)->getMock();
 
-        $coll3 = new AssetCollection(array($asset1, $asset2));
-        $coll2 = new AssetCollection(array($asset3, $coll3));
-        $coll1 = new AssetCollection(array($asset4, $coll2));
+        $coll3 = new AssetCollection([$asset1, $asset2]);
+        $coll2 = new AssetCollection([$asset3, $coll3]);
+        $coll1 = new AssetCollection([$asset4, $coll2]);
 
         $i = 0;
         foreach ($coll1 as $a) {
@@ -211,11 +211,11 @@ class AssetCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testRecursiveDeduplication()
     {
-        $asset = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
+        $asset = $this->getMockBuilder(\Assetic\Asset\AssetInterface::class)->getMock();
 
-        $coll3 = new AssetCollection(array($asset, $asset));
-        $coll2 = new AssetCollection(array($asset, $coll3));
-        $coll1 = new AssetCollection(array($asset, $coll2));
+        $coll3 = new AssetCollection([$asset, $asset]);
+        $coll2 = new AssetCollection([$asset, $coll3]);
+        $coll1 = new AssetCollection([$asset, $coll2]);
 
         $i = 0;
         foreach ($coll1 as $a) {
@@ -227,11 +227,11 @@ class AssetCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testIteration()
     {
-        $asset1 = new StringAsset('asset1', array(), '/some/dir', 'foo.css');
-        $asset2 = new StringAsset('asset2', array(), '/some/dir', 'foo.css');
-        $asset3 = new StringAsset('asset3', array(), '/some/dir', 'bar.css');
+        $asset1 = new StringAsset('asset1', [], '/some/dir', 'foo.css');
+        $asset2 = new StringAsset('asset2', [], '/some/dir', 'foo.css');
+        $asset3 = new StringAsset('asset3', [], '/some/dir', 'bar.css');
 
-        $coll = new AssetCollection(array($asset1, $asset2, $asset3));
+        $coll = new AssetCollection([$asset1, $asset2, $asset3]);
 
         $count = 0;
         foreach ($coll as $a) {
@@ -243,12 +243,12 @@ class AssetCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testBasenameCollision()
     {
-        $asset1 = new StringAsset('asset1', array(), '/some/dir', 'foo/foo.css');
-        $asset2 = new StringAsset('asset2', array(), '/some/dir', 'bar/foo.css');
+        $asset1 = new StringAsset('asset1', [], '/some/dir', 'foo/foo.css');
+        $asset2 = new StringAsset('asset2', [], '/some/dir', 'bar/foo.css');
 
-        $coll = new AssetCollection(array($asset1, $asset2));
+        $coll = new AssetCollection([$asset1, $asset2]);
 
-        $urls = array();
+        $urls = [];
         foreach ($coll as $leaf) {
             $urls[] = $leaf->getTargetPath();
         }
@@ -260,7 +260,7 @@ class AssetCollectionTest extends \PHPUnit_Framework_TestCase
     {
         $path = '/testing/dir.ectory/path/file.ext';
 
-        $coll = new AssetCollection(array(new StringAsset('asset1'), new StringAsset('asset2')));
+        $coll = new AssetCollection([new StringAsset('asset1'), new StringAsset('asset2')]);
         $coll->setTargetPath($path);
 
         foreach ($coll as $asset) {
@@ -276,7 +276,7 @@ class AssetCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testLeafManipulation()
     {
-        $coll = new AssetCollection(array(new StringAsset('asdf')));
+        $coll = new AssetCollection([new StringAsset('asdf')]);
 
         foreach ($coll as $leaf) {
             $leaf->setTargetPath('asdf');
@@ -289,20 +289,20 @@ class AssetCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testRemoveLeaf()
     {
-        $coll = new AssetCollection(array(
+        $coll = new AssetCollection([
             $leaf = new StringAsset('asdf'),
-        ));
+        ]);
 
         $this->assertTrue($coll->removeLeaf($leaf));
     }
 
     public function testRemoveRecursiveLeaf()
     {
-        $coll = new AssetCollection(array(
-            new AssetCollection(array(
+        $coll = new AssetCollection([
+            new AssetCollection([
                 $leaf = new StringAsset('asdf'),
-            )),
-        ));
+            ]),
+        ]);
 
         $this->assertTrue($coll->removeLeaf($leaf));
     }
@@ -317,20 +317,20 @@ class AssetCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testReplaceLeaf()
     {
-        $coll = new AssetCollection(array(
+        $coll = new AssetCollection([
             $leaf = new StringAsset('asdf'),
-        ));
+        ]);
 
         $this->assertTrue($coll->replaceLeaf($leaf, new StringAsset('foo')));
     }
 
     public function testReplaceRecursiveLeaf()
     {
-        $coll = new AssetCollection(array(
-            new AssetCollection(array(
+        $coll = new AssetCollection([
+            new AssetCollection([
                 $leaf = new StringAsset('asdf'),
-            )),
-        ));
+            ]),
+        ]);
 
         $this->assertTrue($coll->replaceLeaf($leaf, new StringAsset('foo')));
     }

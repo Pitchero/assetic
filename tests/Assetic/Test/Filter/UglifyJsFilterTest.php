@@ -32,7 +32,7 @@ class UglifyJsFilterTest extends FilterTestCase
         }
 
         // verify uglifyjs version
-        $pb = new Process($nodeBin ? array($nodeBin, $uglifyjsBin) : array($uglifyjsBin));
+        $pb = new Process($nodeBin ? [$nodeBin, $uglifyjsBin] : [$uglifyjsBin]);
         if (isset($_SERVER['NODE_PATH'])) {
             $pb->setEnv(['NODE_PATH' => $_SERVER['NODE_PATH']]);
         }
@@ -66,7 +66,7 @@ JS;
 
     public function testDefines()
     {
-        $this->filter->setDefines(array('DEBUG=false'));
+        $this->filter->setDefines(['DEBUG=false']);
         $this->filter->filterDump($this->asset);
 
         $expected = <<<JS
@@ -79,7 +79,7 @@ JS;
 
     public function testMutipleDefines()
     {
-        $this->filter->setDefines(array('DEBUG=false', 'FOO=2'));
+        $this->filter->setDefines(['DEBUG=false', 'FOO=2']);
         $this->filter->filterDump($this->asset);
 
         $expected = <<<JS

@@ -39,7 +39,7 @@ class UglifyJs2FilterTest extends FilterTestCase
         }
 
         // verify uglifyjs version
-        $pb = new Process($nodeBin ? array($nodeBin, $uglifyjsBin) : array($uglifyjsBin));
+        $pb = new Process($nodeBin ? [$nodeBin, $uglifyjsBin] : [$uglifyjsBin]);
         if (isset($_SERVER['NODE_PATH'])) {
             $pb->setEnv(['NODE_PATH' => $_SERVER['NODE_PATH']]);
         }
@@ -61,7 +61,7 @@ class UglifyJs2FilterTest extends FilterTestCase
 
     public function testDefines()
     {
-        $this->filter->setDefines(array('DEBUG=false'));
+        $this->filter->setDefines(['DEBUG=false']);
         $this->filter->filterDump($this->asset);
 
         $this->assertContains('DEBUG', $this->asset->getContent());
@@ -70,7 +70,7 @@ class UglifyJs2FilterTest extends FilterTestCase
 
     public function testMutiplieDefines()
     {
-        $this->filter->setDefines(array('DEBUG=false', 'FOO=2'));
+        $this->filter->setDefines(['DEBUG=false', 'FOO=2']);
         $this->filter->filterDump($this->asset);
 
         $this->assertContains('DEBUG', $this->asset->getContent());
@@ -127,7 +127,7 @@ class UglifyJs2FilterTest extends FilterTestCase
     public function testDefinesAndCompress()
     {
         $this->filter->setCompress(true);
-        $this->filter->setDefines(array('DEBUG=false'));
+        $this->filter->setDefines(['DEBUG=false']);
         $this->filter->filterDump($this->asset);
 
         $this->assertNotContains('DEBUG', $this->asset->getContent());
@@ -137,7 +137,7 @@ class UglifyJs2FilterTest extends FilterTestCase
     public function testMutipleDefines()
     {
         $this->filter->setCompress(true);
-        $this->filter->setDefines(array('DEBUG=false', 'FOO=2'));
+        $this->filter->setDefines(['DEBUG=false', 'FOO=2']);
         $this->filter->filterDump($this->asset);
 
         $this->assertNotContains('DEBUG', $this->asset->getContent());

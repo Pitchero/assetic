@@ -30,7 +30,7 @@ abstract class FilterTestCase extends TestCase
         }
 
         // update the path (emulates logic in ExecutableFinder)
-        $paths = array(__DIR__ . '/../../../../node_modules/.bin');
+        $paths = [__DIR__ . '/../../../../node_modules/.bin'];
         if ($current = ini_get('open_basedir')) {
             ini_set('open_basedir', $this->ensurePaths($current, $paths));
         } else {
@@ -49,7 +49,7 @@ abstract class FilterTestCase extends TestCase
             $this->markTestSkipped('Unable to find `node` executable.');
         }
 
-        $pb = new Process(array($bin, '-e', 'require(\''.$module.'\')'));
+        $pb = new Process([$bin, '-e', 'require(\''.$module.'\')']);
 
         if (isset($_SERVER['NODE_PATH'])) {
             $pb->setEnv(['NODE_PATH' => $_SERVER['NODE_PATH']]);

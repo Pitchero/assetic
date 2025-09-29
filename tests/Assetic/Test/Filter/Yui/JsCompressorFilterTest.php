@@ -19,7 +19,7 @@ class JsCompressorFilterTest extends \PHPUnit_Framework_TestCase
     public function testInterface()
     {
         $filter = new JsCompressorFilter('/path/to/jar');
-        $this->assertInstanceOf('Assetic\\Filter\\FilterInterface', $filter, 'JsCompressorFilter implements FilterInterface');
+        $this->assertInstanceOf(\Assetic\Filter\FilterInterface::class, $filter, 'JsCompressorFilter implements FilterInterface');
     }
 
     /**

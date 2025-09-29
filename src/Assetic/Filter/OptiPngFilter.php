@@ -47,7 +47,7 @@ class OptiPngFilter extends BaseProcessFilter
 
     public function filterDump(AssetInterface $asset)
     {
-        $args = array($this->optipngBin);
+        $args = [$this->optipngBin];
 
         if (null !== $this->level) {
             $args[] = '-o';

@@ -81,8 +81,8 @@ class UglifyJs2Filter extends BaseNodeFilter
     public function filterDump(AssetInterface $asset)
     {
         $args = $this->nodeBin
-            ? array($this->nodeBin, $this->uglifyjsBin)
-            : array($this->uglifyjsBin);
+            ? [$this->nodeBin, $this->uglifyjsBin]
+            : [$this->uglifyjsBin];
 
         if ($this->compress) {
             $args[] = '--compress';

@@ -27,10 +27,10 @@ body{} // @import 'nod_needed.css';
 body { background: url(../images/bg.gif); }
 CSS;
 
-        $expected = array('common.css', 'custom.css');
+        $expected = ['common.css', 'custom.css'];
         $actual = SassUtils::extractImports($content);
 
         $this->assertEquals($expected, array_intersect($expected, $actual), '::extractImports() returns all expected URLs');
-        $this->assertEquals(array(), array_diff($actual, $expected), '::extractImports() does not return unexpected URLs');
+        $this->assertEquals([], array_diff($actual, $expected), '::extractImports() does not return unexpected URLs');
     }
 }

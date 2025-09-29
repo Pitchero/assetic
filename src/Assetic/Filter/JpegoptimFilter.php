@@ -53,7 +53,7 @@ class JpegoptimFilter extends BaseProcessFilter
 
     public function filterDump(AssetInterface $asset)
     {
-        $args = array($this->jpegoptimBin);
+        $args = [$this->jpegoptimBin];
 
         if ($this->stripAll) {
             $args[] = '--strip-all';

@@ -21,7 +21,7 @@ class PhpCssEmbedFilterTest extends \PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        if (!class_exists('CssEmbed\CssEmbed')) {
+        if (!class_exists(\CssEmbed\CssEmbed::class)) {
             $this->markTestSkipped('PhpCssEmbed is not installed');
         }
     }

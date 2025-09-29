@@ -60,8 +60,8 @@ class HandlebarsFilter extends BaseNodeFilter
     public function filterLoad(AssetInterface $asset)
     {
         $args = $this->nodeBin
-            ? array($this->nodeBin, $this->handlebarsBin)
-            : array($this->handlebarsBin);
+            ? [$this->nodeBin, $this->handlebarsBin]
+            : [$this->handlebarsBin];
 
         if ($sourcePath = $asset->getSourcePath()) {
             $templateName = basename($sourcePath);
@@ -90,7 +90,7 @@ class HandlebarsFilter extends BaseNodeFilter
         $prefix = '';
         if($this->rootDir && substr($asset->getSourceRoot(), 0, strlen($this->rootDir)) == $this->rootDir) {
             $namespaceDir = substr($asset->getSourceRoot(), strlen($this->rootDir));
-            $namespace = str_replace(array('/', '\\'), '.', trim($namespaceDir, '\\/'));
+            $namespace = str_replace(['/', '\\'], '.', trim($namespaceDir, '\\/'));
 
             if($this->prefix) {
                 $namespace = $this->prefix . '.' . $namespace;
@@ -100,7 +100,7 @@ class HandlebarsFilter extends BaseNodeFilter
             $args[] = $namespace;
 
             $splitNamespace = explode('.', $namespace);
-            $connectedNamespace = array();
+            $connectedNamespace = [];
 
             $prefix .= 'var ';
             foreach($splitNamespace as $segment) {

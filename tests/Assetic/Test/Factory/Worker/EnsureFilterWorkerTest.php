@@ -17,9 +17,9 @@ class EnsureFilterWorkerTest extends \PHPUnit_Framework_TestCase
 {
     public function testMatch()
     {
-        $filter = $this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock();
-        $asset = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
-        $factory = $this->getMockBuilder('Assetic\Factory\AssetFactory')
+        $filter = $this->getMockBuilder(\Assetic\Filter\FilterInterface::class)->getMock();
+        $asset = $this->getMockBuilder(\Assetic\Asset\AssetInterface::class)->getMock();
+        $factory = $this->getMockBuilder(\Assetic\Factory\AssetFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -36,9 +36,9 @@ class EnsureFilterWorkerTest extends \PHPUnit_Framework_TestCase
 
     public function testNonMatch()
     {
-        $filter = $this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock();
-        $asset = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
-        $factory = $this->getMockBuilder('Assetic\Factory\AssetFactory')
+        $filter = $this->getMockBuilder(\Assetic\Filter\FilterInterface::class)->getMock();
+        $asset = $this->getMockBuilder(\Assetic\Asset\AssetInterface::class)->getMock();
+        $factory = $this->getMockBuilder(\Assetic\Factory\AssetFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
 

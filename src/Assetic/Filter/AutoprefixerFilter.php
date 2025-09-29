@@ -31,7 +31,7 @@ class AutoprefixerFilter extends BaseNodeFilter
     /**
      * @var array
      */
-    private $browsers = array();
+    private $browsers = [];
 
     public function __construct($autoprefixerBin)
     {
@@ -57,7 +57,7 @@ class AutoprefixerFilter extends BaseNodeFilter
     public function filterLoad(AssetInterface $asset)
     {
         $input = $asset->getContent();
-        $args = array($this->autoprefixerBin);
+        $args = [$this->autoprefixerBin];
 
         if ($this->browsers) {
             $args[] = '-b';

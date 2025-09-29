@@ -22,8 +22,8 @@ class FunctionCallsFormulaLoaderTest extends \PHPUnit_Framework_TestCase
      */
     public function testInput($function, $inputs, $name, $expected)
     {
-        $resource = $this->getMockBuilder('Assetic\\Factory\\Resource\\ResourceInterface')->getMock();
-        $factory = $this->getMockBuilder('Assetic\\Factory\\AssetFactory')
+        $resource = $this->getMockBuilder(\Assetic\Factory\Resource\ResourceInterface::class)->getMock();
+        $factory = $this->getMockBuilder(\Assetic\Factory\AssetFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -42,13 +42,13 @@ class FunctionCallsFormulaLoaderTest extends \PHPUnit_Framework_TestCase
 
     public function getJavascriptInputs()
     {
-        return array(
-            array('assetic_javascripts', '"js/core.js"',        'asdf', array('asdf' => array(array('js/core.js'), array(), array('debug' => false, 'output' => 'js/*.js', 'name' => 'asdf')))),
-            array('assetic_javascripts', "'js/core.js'",        'asdf', array('asdf' => array(array('js/core.js'), array(), array('debug' => false, 'output' => 'js/*.js', 'name' => 'asdf')))),
-            array('assetic_javascripts', "array('js/core.js')", 'asdf', array('asdf' => array(array('js/core.js'), array(), array('debug' => false, 'output' => 'js/*.js', 'name' => 'asdf')))),
-            array('assetic_javascripts', 'array("js/core.js")', 'asdf', array('asdf' => array(array('js/core.js'), array(), array('debug' => false, 'output' => 'js/*.js', 'name' => 'asdf')))),
-            array('assetic_image',       '"images/logo.gif"',   'asdf', array('asdf' => array(array('images/logo.gif'), array(), array('debug' => false, 'output' => 'images/*', 'name' => 'asdf')))),
-        );
+        return [
+            ['assetic_javascripts', '"js/core.js"',        'asdf', ['asdf' => [['js/core.js'], [], ['debug' => false, 'output' => 'js/*.js', 'name' => 'asdf']]]],
+            ['assetic_javascripts', "'js/core.js'",        'asdf', ['asdf' => [['js/core.js'], [], ['debug' => false, 'output' => 'js/*.js', 'name' => 'asdf']]]],
+            ['assetic_javascripts', "array('js/core.js')", 'asdf', ['asdf' => [['js/core.js'], [], ['debug' => false, 'output' => 'js/*.js', 'name' => 'asdf']]]],
+            ['assetic_javascripts', 'array("js/core.js")', 'asdf', ['asdf' => [['js/core.js'], [], ['debug' => false, 'output' => 'js/*.js', 'name' => 'asdf']]]],
+            ['assetic_image',       '"images/logo.gif"',   'asdf', ['asdf' => [['images/logo.gif'], [], ['debug' => false, 'output' => 'images/*', 'name' => 'asdf']]]],
+        ];
     }
 
     public function testComplexFormula()
@@ -58,12 +58,12 @@ class FunctionCallsFormulaLoaderTest extends \PHPUnit_Framework_TestCase
         $resource = new FileResource(__DIR__.'/templates/debug.php');
         $formulae = $loader->load($resource);
 
-        $this->assertEquals(array(
-            'test123' => array(
-                array('foo.css', 'bar.css'),
-                array('?foo', 'bar'),
-                array('name' => 'test123', 'output' => 'css/packed.css', 'debug' => true),
-            ),
-        ), $formulae);
+        $this->assertEquals([
+            'test123' => [
+                ['foo.css', 'bar.css'],
+                ['?foo', 'bar'],
+                ['name' => 'test123', 'output' => 'css/packed.css', 'debug' => true],
+            ],
+        ], $formulae);
     }
 }

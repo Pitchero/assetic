@@ -52,8 +52,8 @@ class CoffeeScriptFilter extends BaseNodeFilter
         file_put_contents($input, $asset->getContent());
 
         $args = $this->nodeBin
-            ? array($this->nodeBin, $this->coffeeBin)
-            : array($this->coffeeBin);
+            ? [$this->nodeBin, $this->coffeeBin]
+            : [$this->coffeeBin];
 
         $args[] = '-cp';
 

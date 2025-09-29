@@ -47,17 +47,17 @@ class AsseticExtensionTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->am = $this->getMockBuilder('Assetic\\AssetManager')->getMock();
-        $this->fm = $this->getMockBuilder('Assetic\\FilterManager')->getMock();
+        $this->am = $this->getMockBuilder(\Assetic\AssetManager::class)->getMock();
+        $this->fm = $this->getMockBuilder(\Assetic\FilterManager::class)->getMock();
 
-        $this->valueSupplier = $this->getMockBuilder('Assetic\ValueSupplierInterface')->getMock();
+        $this->valueSupplier = $this->getMockBuilder(\Assetic\ValueSupplierInterface::class)->getMock();
 
         $this->factory = new AssetFactory(__DIR__.'/templates');
         $this->factory->setAssetManager($this->am);
         $this->factory->setFilterManager($this->fm);
 
         $this->twig = new Environment(new FilesystemLoader(__DIR__.'/templates'));
-        $this->twig->addExtension(new AsseticExtension($this->factory, array(), $this->valueSupplier));
+        $this->twig->addExtension(new AsseticExtension($this->factory, [], $this->valueSupplier));
     }
 
     protected function tearDown()
@@ -71,7 +71,7 @@ class AsseticExtensionTest extends \PHPUnit_Framework_TestCase
 
     public function testReference()
     {
-        $asset = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
+        $asset = $this->getMockBuilder(\Assetic\Asset\AssetInterface::class)->getMock();
         $this->am->expects($this->any())
             ->method('get')
             ->with('foo')
@@ -98,7 +98,7 @@ class AsseticExtensionTest extends \PHPUnit_Framework_TestCase
 
     public function testFilters()
     {
-        $filter = $this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock();
+        $filter = $this->getMockBuilder(\Assetic\Filter\FilterInterface::class)->getMock();
 
         $this->fm->expects($this->at(0))
             ->method('get')
@@ -116,7 +116,7 @@ class AsseticExtensionTest extends \PHPUnit_Framework_TestCase
 
     public function testOptionalFilter()
     {
-        $filter = $this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock();
+        $filter = $this->getMockBuilder(\Assetic\Filter\FilterInterface::class)->getMock();
 
         $this->fm->expects($this->once())
             ->method('get')
@@ -145,7 +145,7 @@ class AsseticExtensionTest extends \PHPUnit_Framework_TestCase
 
     public function testMixture()
     {
-        $asset = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
+        $asset = $this->getMockBuilder(\Assetic\Asset\AssetInterface::class)->getMock();
         $this->am->expects($this->any())
             ->method('get')
             ->with('foo')
@@ -158,7 +158,7 @@ class AsseticExtensionTest extends \PHPUnit_Framework_TestCase
 
     public function testDebug()
     {
-        $filter = $this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock();
+        $filter = $this->getMockBuilder(\Assetic\Filter\FilterInterface::class)->getMock();
 
         $this->fm->expects($this->once())
             ->method('get')
@@ -173,7 +173,7 @@ class AsseticExtensionTest extends \PHPUnit_Framework_TestCase
 
     public function testCombine()
     {
-        $filter = $this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock();
+        $filter = $this->getMockBuilder(\Assetic\Filter\FilterInterface::class)->getMock();
 
         $this->fm->expects($this->once())
             ->method('get')
@@ -194,7 +194,7 @@ class AsseticExtensionTest extends \PHPUnit_Framework_TestCase
 
     public function testFilterFunction()
     {
-        $filter = $this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock();
+        $filter = $this->getMockBuilder(\Assetic\Filter\FilterInterface::class)->getMock();
 
         $this->fm->expects($this->once())
             ->method('get')
@@ -202,12 +202,12 @@ class AsseticExtensionTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($filter));
 
         $this->twig = new Environment(new FilesystemLoader(__DIR__.'/templates'));
-        $this->twig->addExtension(new AsseticExtension($this->factory, array(
-            'some_func' => array(
+        $this->twig->addExtension(new AsseticExtension($this->factory, [
+            'some_func' => [
                 'filter' => 'some_filter',
-                'options' => array('output' => 'css/*.css'),
-            ),
-        )));
+                'options' => ['output' => 'css/*.css'],
+            ],
+        ]));
 
         $xml = $this->renderXml('function.twig');
         $this->assertEquals(1, count($xml->asset));
@@ -218,7 +218,7 @@ class AsseticExtensionTest extends \PHPUnit_Framework_TestCase
     {
         $this->valueSupplier->expects($this->once())
             ->method('getValues')
-            ->will($this->returnValue(array('foo' => 'a', 'bar' => 'b')));
+            ->will($this->returnValue(['foo' => 'a', 'bar' => 'b']));
 
         $xml = $this->renderXml('variables.twig');
         $this->assertEquals(2, $xml->url->count());
@@ -228,14 +228,14 @@ class AsseticExtensionTest extends \PHPUnit_Framework_TestCase
 
     public function testMultipleSameVariableValues()
     {
-        $vars = array('locale');
-        $asset = new FileAsset(__DIR__.'/../Fixture/messages.{locale}.js', array(), null, null, $vars);
+        $vars = ['locale'];
+        $asset = new FileAsset(__DIR__.'/../Fixture/messages.{locale}.js', [], null, null, $vars);
 
-        $coll = new AssetCollection(array($asset), array(), null, $vars);
+        $coll = new AssetCollection([$asset], [], null, $vars);
 
         $coll->setTargetPath('output.{locale}.js');
 
-        $coll->setValues(array('locale' => 'en'));
+        $coll->setValues(['locale' => 'en']);
         foreach ($coll as $asset) {
             $this->assertEquals('output.{locale}_messages._1.js', $asset->getTargetPath(), 'targetPath must not contain several time the same variable');
         }
@@ -249,7 +249,7 @@ class AsseticExtensionTest extends \PHPUnit_Framework_TestCase
         $this->renderXml('unclosed_tag.twig');
     }
 
-    private function renderXml($name, $context = array())
+    private function renderXml($name, $context = [])
     {
         return new \SimpleXMLElement($this->twig->loadTemplate($name)->render($context));
     }

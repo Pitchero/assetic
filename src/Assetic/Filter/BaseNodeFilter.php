@@ -15,7 +15,7 @@ use Symfony\Component\Process\Process;
 
 abstract class BaseNodeFilter extends BaseProcessFilter
 {
-    private $nodePaths = array();
+    private $nodePaths = [];
 
     public function getNodePaths()
     {
@@ -32,7 +32,7 @@ abstract class BaseNodeFilter extends BaseProcessFilter
         $this->nodePaths[] = $nodePath;
     }
 
-    protected function createProcess(array $arguments = array()): Process
+    protected function createProcess(array $arguments = []): Process
     {
         $pb = parent::createProcess($arguments);
 

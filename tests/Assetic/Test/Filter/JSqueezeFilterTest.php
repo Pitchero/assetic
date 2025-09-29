@@ -21,7 +21,7 @@ class JSqueezeFilterTest extends \PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        if (!class_exists('JSqueeze') && !class_exists('Patchwork\JSqueeze')) {
+        if (!class_exists('JSqueeze') && !class_exists(\Patchwork\JSqueeze::class)) {
             $this->markTestSkipped('JSqueeze is not installed.');
         }
     }

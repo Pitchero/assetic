@@ -22,7 +22,7 @@ class CssImportFilterTest extends \PHPUnit_Framework_TestCase
      */
     public function testImport($filter1, $filter2)
     {
-        $asset = new FileAsset(__DIR__.'/fixtures/cssimport/main.css', array(), __DIR__.'/fixtures/cssimport', 'main.css');
+        $asset = new FileAsset(__DIR__.'/fixtures/cssimport/main.css', [], __DIR__.'/fixtures/cssimport', 'main.css');
         $asset->setTargetPath('foo/bar.css');
         $asset->ensureFilter($filter1);
         $asset->ensureFilter($filter2);
@@ -52,15 +52,15 @@ CSS;
      */
     public function getFilters()
     {
-        return array(
-            array(new CssImportFilter(), new CssRewriteFilter()),
-            array(new CssRewriteFilter(), new CssImportFilter()),
-        );
+        return [
+            [new CssImportFilter(), new CssRewriteFilter()],
+            [new CssRewriteFilter(), new CssImportFilter()],
+        ];
     }
 
     public function testNonCssImport()
     {
-        $asset = new FileAsset(__DIR__.'/fixtures/cssimport/noncssimport.css', array(), __DIR__.'/fixtures/cssimport', 'noncssimport.css');
+        $asset = new FileAsset(__DIR__.'/fixtures/cssimport/noncssimport.css', [], __DIR__.'/fixtures/cssimport', 'noncssimport.css');
         $asset->load();
 
         $filter = new CssImportFilter();
@@ -74,7 +74,7 @@ CSS;
      */
     public function testCommentedImport($filter1, $filter2)
     {
-        $asset = new FileAsset(__DIR__.'/fixtures/cssimport/commentedimport.css', array(), __DIR__.'/fixtures/cssimport', 'commentedimport.css');
+        $asset = new FileAsset(__DIR__.'/fixtures/cssimport/commentedimport.css', [], __DIR__.'/fixtures/cssimport', 'commentedimport.css');
         $asset->setTargetPath('foo/bar.css');
         $asset->ensureFilter($filter1);
         $asset->ensureFilter($filter2);

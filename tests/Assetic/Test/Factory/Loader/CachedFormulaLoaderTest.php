@@ -21,11 +21,11 @@ class CachedFormulaLoaderTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->loader = $this->getMockBuilder('Assetic\\Factory\\Loader\\FormulaLoaderInterface')->getMock();
-        $this->configCache = $this->getMockBuilder('Assetic\\Cache\\ConfigCache')
+        $this->loader = $this->getMockBuilder(\Assetic\Factory\Loader\FormulaLoaderInterface::class)->getMock();
+        $this->configCache = $this->getMockBuilder(\Assetic\Cache\ConfigCache::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->resource = $this->getMockBuilder('Assetic\\Factory\\Resource\\ResourceInterface')->getMock();
+        $this->resource = $this->getMockBuilder(\Assetic\Factory\Resource\ResourceInterface::class)->getMock();
     }
 
     protected function tearDown()
@@ -37,10 +37,10 @@ class CachedFormulaLoaderTest extends \PHPUnit_Framework_TestCase
 
     public function testNotDebug()
     {
-        $expected = array(
-            'foo' => array(array(), array(), array()),
-            'bar' => array(array(), array(), array()),
-        );
+        $expected = [
+            'foo' => [[], [], []],
+            'bar' => [[], [], []],
+        ];
 
         $this->configCache->expects($this->once())
             ->method('has')
@@ -60,10 +60,10 @@ class CachedFormulaLoaderTest extends \PHPUnit_Framework_TestCase
 
     public function testNotDebugCached()
     {
-        $expected = array(
-            'foo' => array(array(), array(), array()),
-            'bar' => array(array(), array(), array()),
-        );
+        $expected = [
+            'foo' => [[], [], []],
+            'bar' => [[], [], []],
+        ];
 
         $this->configCache->expects($this->once())
             ->method('has')
@@ -83,10 +83,10 @@ class CachedFormulaLoaderTest extends \PHPUnit_Framework_TestCase
     public function testDebugCached()
     {
         $timestamp = 123;
-        $expected = array(
-            'foo' => array(array(), array(), array()),
-            'bar' => array(array(), array(), array()),
-        );
+        $expected = [
+            'foo' => [[], [], []],
+            'bar' => [[], [], []],
+        ];
 
         $this->configCache->expects($this->once())
             ->method('has')
@@ -114,10 +114,10 @@ class CachedFormulaLoaderTest extends \PHPUnit_Framework_TestCase
     public function testDebugCachedStale()
     {
         $timestamp = 123;
-        $expected = array(
-            'foo' => array(array(), array(), array()),
-            'bar' => array(array(), array(), array()),
-        );
+        $expected = [
+            'foo' => [[], [], []],
+            'bar' => [[], [], []],
+        ];
 
         $this->configCache->expects($this->once())
             ->method('has')

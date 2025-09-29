@@ -30,8 +30,8 @@ class JSqueezeFilter implements FilterInterface
     public function __construct()
     {
         // JSqueeze is namespaced since 2.x, this works with both 1.x and 2.x
-        if (class_exists('\\Patchwork\\JSqueeze')) {
-            $this->className = '\\Patchwork\\JSqueeze';
+        if (class_exists(\Patchwork\JSqueeze::class)) {
+            $this->className = \Patchwork\JSqueeze::class;
             $this->defaultRx = \Patchwork\JSqueeze::SPECIAL_VAR_PACKER;
         } else {
             $this->className = '\\JSqueeze';

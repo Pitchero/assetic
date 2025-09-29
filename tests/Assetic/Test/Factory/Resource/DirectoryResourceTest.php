@@ -35,11 +35,11 @@ class DirectoryResourceTest extends \PHPUnit_Framework_TestCase
 
     public function getPatterns()
     {
-        return array(
-            array(null),
-            array('/\.php$/'),
-            array('/\.foo$/'),
-        );
+        return [
+            [null],
+            ['/\.php$/'],
+            ['/\.foo$/'],
+        ];
     }
 
     /**
@@ -52,7 +52,7 @@ class DirectoryResourceTest extends \PHPUnit_Framework_TestCase
         $count = 0;
         foreach ($resource as $r) {
             ++$count;
-            $this->assertInstanceOf('Assetic\\Factory\\Resource\\ResourceInterface', $r);
+            $this->assertInstanceOf(\Assetic\Factory\Resource\ResourceInterface::class, $r);
         }
 
         if ($empty) {
@@ -64,11 +64,11 @@ class DirectoryResourceTest extends \PHPUnit_Framework_TestCase
 
     public function getPatternsAndEmpty()
     {
-        return array(
-            array(null, false),
-            array('/\.php$/', false),
-            array('/\.foo$/', true),
-        );
+        return [
+            [null, false],
+            ['/\.php$/', false],
+            ['/\.foo$/', true],
+        ];
     }
 
     public function testRecursiveIteration()
@@ -94,10 +94,10 @@ class DirectoryResourceTest extends \PHPUnit_Framework_TestCase
 
     public function getPaths()
     {
-        return array(
-            array(__DIR__),
-            array(__DIR__.DIRECTORY_SEPARATOR),
-        );
+        return [
+            [__DIR__],
+            [__DIR__.DIRECTORY_SEPARATOR],
+        ];
     }
 
     public function testInvalidDirectory()

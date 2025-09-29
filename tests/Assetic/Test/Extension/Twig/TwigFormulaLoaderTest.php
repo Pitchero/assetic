@@ -28,20 +28,20 @@ class TwigFormulaLoaderTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->am = $this->getMockBuilder('Assetic\\AssetManager')->getMock();
-        $this->fm = $this->getMockBuilder('Assetic\\FilterManager')->getMock();
+        $this->am = $this->getMockBuilder(\Assetic\AssetManager::class)->getMock();
+        $this->fm = $this->getMockBuilder(\Assetic\FilterManager::class)->getMock();
 
         $factory = new AssetFactory(__DIR__.'/templates');
         $factory->setAssetManager($this->am);
         $factory->setFilterManager($this->fm);
 
-        $twig = new Environment(new ArrayLoader(array()));
-        $twig->addExtension(new AsseticExtension($factory, array(
-            'some_func' => array(
+        $twig = new Environment(new ArrayLoader([]));
+        $twig->addExtension(new AsseticExtension($factory, [
+            'some_func' => [
                 'filter' => 'some_filter',
-                'options' => array('output' => 'css/*.css'),
-            ),
-        )));
+                'options' => ['output' => 'css/*.css'],
+            ],
+        ]));
 
         $this->loader = new TwigFormulaLoader($twig);
     }
@@ -54,23 +54,23 @@ class TwigFormulaLoaderTest extends \PHPUnit_Framework_TestCase
 
     public function testMixture()
     {
-        $asset = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
+        $asset = $this->getMockBuilder(\Assetic\Asset\AssetInterface::class)->getMock();
 
-        $expected = array(
-            'mixture' => array(
-                array('foo', 'foo/*', '@foo'),
-                array(),
-                array(
+        $expected = [
+            'mixture' => [
+                ['foo', 'foo/*', '@foo'],
+                [],
+                [
                     'output'  => 'packed/mixture',
                     'name'    => 'mixture',
                     'debug'   => false,
                     'combine' => null,
-                    'vars'    => array(),
-                ),
-            ),
-        );
+                    'vars'    => [],
+                ],
+            ],
+        ];
 
-        $resource = $this->getMockBuilder('Assetic\\Factory\\Resource\\ResourceInterface')->getMock();
+        $resource = $this->getMockBuilder(\Assetic\Factory\Resource\ResourceInterface::class)->getMock();
         $resource->expects($this->once())
             ->method('getContent')
             ->will($this->returnValue(file_get_contents(__DIR__.'/templates/mixture.twig')));
@@ -85,15 +85,15 @@ class TwigFormulaLoaderTest extends \PHPUnit_Framework_TestCase
 
     public function testFunction()
     {
-        $expected = array(
-            'my_asset' => array(
-                array('path/to/asset'),
-                array('some_filter'),
-                array('output' => 'css/*.css', 'name' => 'my_asset'),
-            ),
-        );
+        $expected = [
+            'my_asset' => [
+                ['path/to/asset'],
+                ['some_filter'],
+                ['output' => 'css/*.css', 'name' => 'my_asset'],
+            ],
+        ];
 
-        $resource = $this->getMockBuilder('Assetic\\Factory\\Resource\\ResourceInterface')->getMock();
+        $resource = $this->getMockBuilder(\Assetic\Factory\Resource\ResourceInterface::class)->getMock();
         $resource->expects($this->once())
             ->method('getContent')
             ->will($this->returnValue(file_get_contents(__DIR__.'/templates/function.twig')));
@@ -104,32 +104,32 @@ class TwigFormulaLoaderTest extends \PHPUnit_Framework_TestCase
 
     public function testUnclosedTag()
     {
-        $resource = $this->getMockBuilder('Assetic\\Factory\\Resource\\ResourceInterface')->getMock();
+        $resource = $this->getMockBuilder(\Assetic\Factory\Resource\ResourceInterface::class)->getMock();
         $resource->expects($this->once())
             ->method('getContent')
             ->will($this->returnValue(file_get_contents(__DIR__.'/templates/unclosed_tag.twig')));
 
         $formulae = $this->loader->load($resource);
-        $this->assertEquals(array(), $formulae);
+        $this->assertEquals([], $formulae);
     }
 
     public function testEmbeddedTemplate()
     {
-        $expected = array(
-            'image' => array(
-                array('images/foo.png'),
-                array(),
-                array(
+        $expected = [
+            'image' => [
+                ['images/foo.png'],
+                [],
+                [
                     'name'    => 'image',
                     'debug'   => true,
-                    'vars'    => array(),
+                    'vars'    => [],
                     'output'  => 'images/foo.png',
                     'combine' => false,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
 
-        $resource = $this->getMockBuilder('Assetic\\Factory\\Resource\\ResourceInterface')->getMock();
+        $resource = $this->getMockBuilder(\Assetic\Factory\Resource\ResourceInterface::class)->getMock();
         $resource->expects($this->once())
             ->method('getContent')
             ->will($this->returnValue(file_get_contents(__DIR__.'/templates/embed.twig')));

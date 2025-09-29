@@ -50,12 +50,12 @@ class CssImportFilter extends BaseCssFilter implements DependencyExtractorInterf
 
             if (false !== strpos($matches['url'], '://')) {
                 // absolute
-                list($importScheme, $tmp) = explode('://', $matches['url'], 2);
-                list($importHost, $importPath) = explode('/', $tmp, 2);
+                [$importScheme, $tmp] = explode('://', $matches['url'], 2);
+                [$importHost, $importPath] = explode('/', $tmp, 2);
                 $importRoot = $importScheme.'://'.$importHost;
             } elseif (0 === strpos($matches['url'], '//')) {
                 // protocol-relative
-                list($importHost, $importPath) = explode('/', substr($matches['url'], 2), 2);
+                [$importHost, $importPath] = explode('/', substr($matches['url'], 2), 2);
                 $importRoot = '//'.$importHost;
             } elseif ('/' == $matches['url'][0]) {
                 // root-relative
@@ -72,12 +72,12 @@ class CssImportFilter extends BaseCssFilter implements DependencyExtractorInterf
 
             $importSource = $importRoot.'/'.$importPath;
             if (false !== strpos($importSource, '://') || 0 === strpos($importSource, '//')) {
-                $import = new HttpAsset($importSource, array($importFilter), true);
+                $import = new HttpAsset($importSource, [$importFilter], true);
             } elseif ('css' != pathinfo($importPath, PATHINFO_EXTENSION) || !file_exists($importSource)) {
                 // ignore non-css and non-existant imports
                 return $matches[0];
             } else {
-                $import = new FileAsset($importSource, array($importFilter), $importRoot, $importPath);
+                $import = new FileAsset($importSource, [$importFilter], $importRoot, $importPath);
             }
 
             $import->setTargetPath($sourcePath);
@@ -103,6 +103,6 @@ class CssImportFilter extends BaseCssFilter implements DependencyExtractorInterf
     public function getChildren(AssetFactory $factory, $content, $loadPath = null)
     {
         // todo
-        return array();
+        return [];
     }
 }

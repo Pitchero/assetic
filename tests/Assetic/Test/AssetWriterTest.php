@@ -22,13 +22,13 @@ class AssetWriterTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->dir = sys_get_temp_dir().'/assetic_tests_'.rand(11111, 99999);
+        $this->dir = sys_get_temp_dir().'/assetic_tests_'.random_int(11111, 99999);
         mkdir($this->dir);
-        $this->writer = new AssetWriter($this->dir, array(
-            'locale' => array('en', 'de', 'fr'),
-            'browser' => array('ie', 'firefox', 'other'),
-            'gzip' => array('gzip', ''),
-        ));
+        $this->writer = new AssetWriter($this->dir, [
+            'locale' => ['en', 'de', 'fr'],
+            'browser' => ['ie', 'firefox', 'other'],
+            'gzip' => ['gzip', ''],
+        ]);
     }
 
     protected function tearDown()
@@ -39,12 +39,12 @@ class AssetWriterTest extends \PHPUnit_Framework_TestCase
 
     public function testWriteManagerAssets()
     {
-        $asset = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
-        $am = $this->getMockBuilder('Assetic\\AssetManager')->getMock();
+        $asset = $this->getMockBuilder(\Assetic\Asset\AssetInterface::class)->getMock();
+        $am = $this->getMockBuilder(\Assetic\AssetManager::class)->getMock();
 
         $am->expects($this->once())
             ->method('getNames')
-            ->will($this->returnValue(array('foo')));
+            ->will($this->returnValue(['foo']));
         $am->expects($this->once())
             ->method('get')
             ->with('foo')
@@ -57,10 +57,10 @@ class AssetWriterTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue('content'));
         $asset->expects($this->atLeastOnce())
             ->method('getVars')
-            ->will($this->returnValue(array()));
+            ->will($this->returnValue([]));
         $asset->expects($this->atLeastOnce())
             ->method('getValues')
-            ->will($this->returnValue(array()));
+            ->will($this->returnValue([]));
 
         $this->writer->writeManagerAssets($am);
 
@@ -70,20 +70,20 @@ class AssetWriterTest extends \PHPUnit_Framework_TestCase
 
     public function testWriteAssetWithVars()
     {
-        $asset = $this->getMockBuilder('Assetic\Asset\AssetInterface')->getMock();
+        $asset = $this->getMockBuilder(\Assetic\Asset\AssetInterface::class)->getMock();
         $asset->expects($this->atLeastOnce())
             ->method('getVars')
-            ->will($this->returnValue(array('locale')));
+            ->will($this->returnValue(['locale']));
 
         $self = $this;
-        $expectedValues = array(
-            array('locale' => 'en'),
-            array('locale' => 'de'),
-            array('locale' => 'fr'),
-        );
+        $expectedValues = [
+            ['locale' => 'en'],
+            ['locale' => 'de'],
+            ['locale' => 'fr'],
+        ];
         $asset->expects($this->exactly(3))
             ->method('setValues')
-            ->will($this->returnCallback(function ($values) use ($self, $expectedValues) {
+            ->will($this->returnCallback(function ($values) use ($self, $expectedValues): void {
                 static $counter = 0;
                 $self->assertEquals($expectedValues[$counter++], $values);
             }));
@@ -116,7 +116,7 @@ class AssetWriterTest extends \PHPUnit_Framework_TestCase
     public function testAssetWithInputVars()
     {
         $asset = new FileAsset(__DIR__.'/Fixture/messages.{locale}.js',
-            array(), null, null, array('locale'));
+            [], null, null, ['locale']);
         $asset->setTargetPath('messages.{locale}.js');
 
         $this->writer->writeAsset($asset);

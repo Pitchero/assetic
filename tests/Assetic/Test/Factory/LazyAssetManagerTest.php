@@ -20,7 +20,7 @@ class LazyAssetManagerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->factory = $this->getMockBuilder('Assetic\\Factory\\AssetFactory')
+        $this->factory = $this->getMockBuilder(\Assetic\Factory\AssetFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -35,23 +35,23 @@ class LazyAssetManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testGetFromLoader()
     {
-        $resource = $this->getMockBuilder('Assetic\\Factory\\Resource\\ResourceInterface')->getMock();
-        $loader = $this->getMockBuilder('Assetic\\Factory\\Loader\\FormulaLoaderInterface')->getMock();
-        $asset = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
+        $resource = $this->getMockBuilder(\Assetic\Factory\Resource\ResourceInterface::class)->getMock();
+        $loader = $this->getMockBuilder(\Assetic\Factory\Loader\FormulaLoaderInterface::class)->getMock();
+        $asset = $this->getMockBuilder(\Assetic\Asset\AssetInterface::class)->getMock();
 
-        $formula = array(
-            array('js/core.js', 'js/more.js'),
-            array('?yui_js'),
-            array('output' => 'js/all.js'),
-        );
+        $formula = [
+            ['js/core.js', 'js/more.js'],
+            ['?yui_js'],
+            ['output' => 'js/all.js'],
+        ];
 
         $loader->expects($this->once())
             ->method('load')
             ->with($resource)
-            ->will($this->returnValue(array('foo' => $formula)));
+            ->will($this->returnValue(['foo' => $formula]));
         $this->factory->expects($this->once())
             ->method('createAsset')
-            ->with($formula[0], $formula[1], $formula[2] + array('name' => 'foo'))
+            ->with($formula[0], $formula[1], $formula[2] + ['name' => 'foo'])
             ->will($this->returnValue($asset));
 
         $this->am->setLoader('foo', $loader);
@@ -65,10 +65,10 @@ class LazyAssetManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testGetResources()
     {
-        $resources = array(
-            $this->getMockBuilder('Assetic\\Factory\\Resource\\ResourceInterface')->getMock(),
-            $this->getMockBuilder('Assetic\\Factory\\Resource\\ResourceInterface')->getMock(),
-        );
+        $resources = [
+            $this->getMockBuilder(\Assetic\Factory\Resource\ResourceInterface::class)->getMock(),
+            $this->getMockBuilder(\Assetic\Factory\Resource\ResourceInterface::class)->getMock(),
+        ];
 
         $this->am->addResource($resources[0], 'foo');
         $this->am->addResource($resources[1], 'bar');
@@ -87,7 +87,7 @@ class LazyAssetManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testSetFormula()
     {
-        $this->am->setFormula('foo', array());
+        $this->am->setFormula('foo', []);
         $this->am->load();
         $this->assertTrue($this->am->hasFormula('foo'), '->load() does not remove manually added formulae');
     }
@@ -103,7 +103,7 @@ class LazyAssetManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testGetLastModified()
     {
-        $asset = $this->getMockBuilder('Assetic\Asset\AssetInterface')->getMock();
+        $asset = $this->getMockBuilder(\Assetic\Asset\AssetInterface::class)->getMock();
 
         $this->factory->expects($this->once())
             ->method('getLastModified')

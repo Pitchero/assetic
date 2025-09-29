@@ -19,7 +19,7 @@ class GlobAssetTest extends \PHPUnit_Framework_TestCase
     public function testInterface()
     {
         $asset = new GlobAsset(__DIR__.'/*.php');
-        $this->assertInstanceOf('Assetic\\Asset\\AssetInterface', $asset, 'Asset implements AssetInterface');
+        $this->assertInstanceOf(\Assetic\Asset\AssetInterface::class, $asset, 'Asset implements AssetInterface');
     }
 
     public function testIteration()
@@ -62,9 +62,9 @@ class GlobAssetTest extends \PHPUnit_Framework_TestCase
 
     public function testVariableInPath()
     {
-        $globasset = new GlobAsset(__DIR__.'/*.php', array(), null, array('testvar'));
+        $globasset = new GlobAsset(__DIR__.'/*.php', [], null, ['testvar']);
         $globasset->setTargetPath('{testvar}_*.php');
-        $globasset->setValues(array('testvar' => 'works'));
+        $globasset->setValues(['testvar' => 'works']);
 
         foreach ($globasset as $asset) {
             $target = VarUtils::resolve($asset->getTargetPath(), $asset->getVars(), $asset->getValues());

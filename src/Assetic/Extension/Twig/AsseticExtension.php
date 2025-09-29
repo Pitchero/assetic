@@ -21,33 +21,33 @@ class AsseticExtension extends \Twig_Extension implements GlobalsInterface
     protected $functions;
     protected $valueSupplier;
 
-    public function __construct(AssetFactory $factory, $functions = array(), ValueSupplierInterface $valueSupplier = null)
+    public function __construct(AssetFactory $factory, $functions = [], ValueSupplierInterface $valueSupplier = null)
     {
         $this->factory = $factory;
-        $this->functions = array();
+        $this->functions = [];
         $this->valueSupplier = $valueSupplier;
 
         foreach ($functions as $function => $options) {
-            if (is_integer($function) && is_string($options)) {
-                $this->functions[$options] = array('filter' => $options);
+            if (is_int($function) && is_string($options)) {
+                $this->functions[$options] = ['filter' => $options];
             } else {
-                $this->functions[$function] = $options + array('filter' => $function);
+                $this->functions[$function] = $options + ['filter' => $function];
             }
         }
     }
 
     public function getTokenParsers()
     {
-        return array(
+        return [
             new AsseticTokenParser($this->factory, 'javascripts', 'js/*.js'),
             new AsseticTokenParser($this->factory, 'stylesheets', 'css/*.css'),
             new AsseticTokenParser($this->factory, 'image', 'images/*', true),
-        );
+        ];
     }
 
     public function getFunctions()
     {
-        $functions = array();
+        $functions = [];
         foreach ($this->functions as $function => $filter) {
             $functions[] = new AsseticFilterFunction($function);
         }
@@ -57,12 +57,12 @@ class AsseticExtension extends \Twig_Extension implements GlobalsInterface
 
     public function getGlobals()
     {
-        return array(
-            'assetic' => array(
+        return [
+            'assetic' => [
                 'debug' => $this->factory->isDebug(),
-                'vars'  => null !== $this->valueSupplier ? new ValueContainer($this->valueSupplier) : array(),
-            ),
-        );
+                'vars'  => null !== $this->valueSupplier ? new ValueContainer($this->valueSupplier) : [],
+            ],
+        ];
     }
 
     public function getFilterInvoker($function)

@@ -68,7 +68,7 @@ $red: #F00;
 
 EOF;
 
-        $asset = new StringAsset($input, array(), null, 'foo.scss');
+        $asset = new StringAsset($input, [], null, 'foo.scss');
         $asset->load();
 
         $this->filter->setStyle(SassFilter::STYLE_COMPACT);
@@ -88,7 +88,7 @@ EOF;
 
         $filters = $children[0]->getFilters();
         $this->assertCount(1, $filters);
-        $this->assertInstanceOf('Assetic\Filter\Sass\SassFilter', $filters[0]);
+        $this->assertInstanceOf(\Assetic\Filter\Sass\SassFilter::class, $filters[0]);
     }
 
     public function testGetChildrenCatchesPartialsInSubfolders()
@@ -113,6 +113,6 @@ CSS;
 
         $factory = new AssetFactory('/'); // the factory root isn't used
 
-        $this->assertEquals(array(), $this->filter->getChildren($factory, $imports, __DIR__.'/../fixtures/sass'));
+        $this->assertEquals([], $this->filter->getChildren($factory, $imports, __DIR__.'/../fixtures/sass'));
     }
 }

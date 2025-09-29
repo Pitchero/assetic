@@ -76,7 +76,7 @@ CSS;
         $asset = new StringAsset($input);
         $asset->load();
 
-        $this->filter->setBrowsers(array('ff 3'));
+        $this->filter->setBrowsers(['ff 3']);
         $this->filter->filterLoad($asset);
 
         $this->assertEquals($expected, $asset->getContent());

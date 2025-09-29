@@ -32,8 +32,8 @@ class CacheBustingWorkerTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldApplyHash()
     {
-        $asset = $this->getMockBuilder('Assetic\Asset\AssetInterface')->getMock();
-        $factory = $this->getMockBuilder('Assetic\Factory\AssetFactory')
+        $asset = $this->getMockBuilder(\Assetic\Asset\AssetInterface::class)->getMock();
+        $factory = $this->getMockBuilder(\Assetic\Factory\AssetFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -58,11 +58,11 @@ class CacheBustingWorkerTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldApplyConsistentHash()
     {
-        $asset = $this->getMockBuilder('Assetic\Asset\AssetInterface')->getMock();
-        $factory = $this->getMockBuilder('Assetic\Factory\AssetFactory')
+        $asset = $this->getMockBuilder(\Assetic\Asset\AssetInterface::class)->getMock();
+        $factory = $this->getMockBuilder(\Assetic\Factory\AssetFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $paths = array();
+        $paths = [];
 
         $asset->expects($this->any())
             ->method('getTargetPath')
@@ -72,7 +72,7 @@ class CacheBustingWorkerTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(1234));
         $asset->expects($this->exactly(2))
             ->method('setTargetPath')
-            ->will($this->returnCallback(function ($path) use (&$paths) {
+            ->will($this->returnCallback(function ($path) use (&$paths): void {
                 $paths[] = $path;
             }));
 
@@ -88,8 +88,8 @@ class CacheBustingWorkerTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldNotReapplyHash()
     {
-        $asset = $this->getMockBuilder('Assetic\Asset\AssetInterface')->getMock();
-        $factory = $this->getMockBuilder('Assetic\Factory\AssetFactory')
+        $asset = $this->getMockBuilder(\Assetic\Asset\AssetInterface::class)->getMock();
+        $factory = $this->getMockBuilder(\Assetic\Factory\AssetFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
         $path = null;
@@ -104,7 +104,7 @@ class CacheBustingWorkerTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(1234));
         $asset->expects($this->once())
             ->method('setTargetPath')
-            ->will($this->returnCallback(function ($arg) use (&$path) {
+            ->will($this->returnCallback(function ($arg) use (&$path): void {
                 $path = $arg;
             }));
 

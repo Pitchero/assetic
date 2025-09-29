@@ -106,7 +106,7 @@ EOF;
         $asset = new StringAsset('.foo { color: @bar }');
         $asset->load();
 
-        $this->filter->setPresets(array('bar' => 'green'));
+        $this->filter->setPresets(['bar' => 'green']);
         $this->filter->filterLoad($asset);
 
         $this->assertContains('green', $asset->getContent(), '->setPresets() to pass variables into lessphp filter');
@@ -120,7 +120,7 @@ EOF;
         $asset = new StringAsset('.foo { color: bar(); }');
         $asset->load();
 
-        $this->filter->registerFunction('bar', function () { return 'red';});
+        $this->filter->registerFunction('bar', fn() => 'red');
         $this->filter->filterLoad($asset);
 
         $expected = new StringAsset('.foo { color: red; }');
@@ -213,27 +213,27 @@ EOF;
 
     public function provideImports()
     {
-        return array(
-            array('@import \'main.less\';'),
-            array('@import "main.less";'),
-            array('@import url(\'main.less\');'),
-            array('@import url("main.less");'),
-            array('@import url(main.less);'),
-            array('@import \'main\';'),
-            array('@import "main";'),
-            array('@import url(\'main\');'),
-            array('@import url("main");'),
-            array('@import url(main);'),
-            array('@import-once \'main.less\';'),
-            array('@import-once "main.less";'),
-            array('@import-once url(\'main.less\');'),
-            array('@import-once url("main.less");'),
-            array('@import-once url(main.less);'),
-            array('@import-once \'main\';'),
-            array('@import-once "main";'),
-            array('@import-once url(\'main\');'),
-            array('@import-once url("main");'),
-            array('@import-once url(main);'),
-        );
+        return [
+            ['@import \'main.less\';'],
+            ['@import "main.less";'],
+            ['@import url(\'main.less\');'],
+            ['@import url("main.less");'],
+            ['@import url(main.less);'],
+            ['@import \'main\';'],
+            ['@import "main";'],
+            ['@import url(\'main\');'],
+            ['@import url("main");'],
+            ['@import url(main);'],
+            ['@import-once \'main.less\';'],
+            ['@import-once "main.less";'],
+            ['@import-once url(\'main.less\');'],
+            ['@import-once url("main.less");'],
+            ['@import-once url(main.less);'],
+            ['@import-once \'main\';'],
+            ['@import-once "main";'],
+            ['@import-once url(\'main\');'],
+            ['@import-once url("main");'],
+            ['@import-once url(main);'],
+        ];
     }
 }

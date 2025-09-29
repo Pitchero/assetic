@@ -36,13 +36,13 @@ class ConfigCacheTest extends TestCase
 
     public function testCache()
     {
-        $this->cache->set('foo', array(1, 2, 3));
-        $this->assertEquals(array(1, 2, 3), $this->cache->get('foo'), '->get() returns the ->set() value');
+        $this->cache->set('foo', [1, 2, 3]);
+        $this->assertEquals([1, 2, 3], $this->cache->get('foo'), '->get() returns the ->set() value');
     }
 
     public function testTimestamp()
     {
-        $this->cache->set('bar', array(4, 5, 6));
+        $this->cache->set('bar', [4, 5, 6]);
         $this->assertInternalType('integer', $time = $this->cache->getTimestamp('bar'), '->getTimestamp() returns an integer');
         $this->assertNotEmpty($time, '->getTimestamp() returns a non-empty number');
     }

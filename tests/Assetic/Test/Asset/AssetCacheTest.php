@@ -22,8 +22,8 @@ class AssetCacheTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->inner = $this->getMockBuilder('Assetic\\Asset\\AssetInterface')->getMock();
-        $this->cache = $this->getMockBuilder('Assetic\\Cache\\CacheInterface')->getMock();
+        $this->inner = $this->getMockBuilder(\Assetic\Asset\AssetInterface::class)->getMock();
+        $this->cache = $this->getMockBuilder(\Assetic\Cache\CacheInterface::class)->getMock();
 
         $this->asset = new AssetCache($this->inner, $this->cache);
     }
@@ -38,11 +38,11 @@ class AssetCacheTest extends \PHPUnit_Framework_TestCase
     public function testLoadFromCache()
     {
         $content = 'asdf';
-        $filter = $this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock();
+        $filter = $this->getMockBuilder(\Assetic\Filter\FilterInterface::class)->getMock();
 
         $this->inner->expects($this->once())
             ->method('getFilters')
-            ->will($this->returnValue(array($filter)));
+            ->will($this->returnValue([$filter]));
         $this->cache->expects($this->once())
             ->method('has')
             ->with($this->isType('string'))
@@ -64,7 +64,7 @@ class AssetCacheTest extends \PHPUnit_Framework_TestCase
 
         $this->inner->expects($this->once())
             ->method('getFilters')
-            ->will($this->returnValue(array()));
+            ->will($this->returnValue([]));
         $this->cache->expects($this->once())
             ->method('has')
             ->with($this->isType('string'))
@@ -86,7 +86,7 @@ class AssetCacheTest extends \PHPUnit_Framework_TestCase
 
         $this->inner->expects($this->once())
             ->method('getFilters')
-            ->will($this->returnValue(array()));
+            ->will($this->returnValue([]));
         $this->cache->expects($this->once())
             ->method('has')
             ->with($this->isType('string'))
@@ -105,7 +105,7 @@ class AssetCacheTest extends \PHPUnit_Framework_TestCase
 
         $this->inner->expects($this->once())
             ->method('getFilters')
-            ->will($this->returnValue(array()));
+            ->will($this->returnValue([]));
         $this->cache->expects($this->once())
             ->method('has')
             ->with($this->isType('string'))
@@ -122,7 +122,7 @@ class AssetCacheTest extends \PHPUnit_Framework_TestCase
 
     public function testEnsureFilter()
     {
-        $filter = $this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock();
+        $filter = $this->getMockBuilder(\Assetic\Filter\FilterInterface::class)->getMock();
         $this->inner->expects($this->once())->method('ensureFilter');
         $this->asset->ensureFilter($filter);
     }
@@ -131,7 +131,7 @@ class AssetCacheTest extends \PHPUnit_Framework_TestCase
     {
         $this->inner->expects($this->once())
             ->method('getFilters')
-            ->will($this->returnValue(array()));
+            ->will($this->returnValue([]));
 
         $this->assertInternalType('array', $this->asset->getFilters(), '->getFilters() returns the inner asset filters');
     }

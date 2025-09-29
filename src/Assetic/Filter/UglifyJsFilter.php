@@ -98,8 +98,8 @@ class UglifyJsFilter extends BaseNodeFilter
     public function filterDump(AssetInterface $asset)
     {
         $args = $this->nodeBin
-            ? array($this->nodeBin, $this->uglifyjsBin)
-            : array($this->uglifyjsBin);
+            ? [$this->nodeBin, $this->uglifyjsBin]
+            : [$this->uglifyjsBin];
 
         if ($this->noCopyright) {
             $args[] = '--no-copyright';

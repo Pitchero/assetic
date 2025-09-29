@@ -19,12 +19,12 @@ class LessUtilsTest extends \PHPUnit_Framework_TestCase
     {
         $content = 'body { background: url(../images/bg.gif); }';
 
-        $matches = array();
-        $actual = LessUtils::filterUrls($content, function ($match) use (&$matches) {
+        $matches = [];
+        $actual = LessUtils::filterUrls($content, function ($match) use (&$matches): void {
             $matches[] = $match['url'];
         });
 
-        $this->assertEquals(array('../images/bg.gif'), $matches);
+        $this->assertEquals(['../images/bg.gif'], $matches);
     }
 
     public function testExtractImports()
@@ -40,11 +40,11 @@ class LessUtilsTest extends \PHPUnit_Framework_TestCase
 body { background: url(../images/bg.gif); }
 CSS;
 
-        $expected = array('common.css', 'custom.css');
+        $expected = ['common.css', 'custom.css'];
         $actual = LessUtils::extractImports($content);
 
         $this->assertEquals($expected, array_intersect($expected, $actual), '::extractImports() returns all expected URLs');
-        $this->assertEquals(array(), array_diff($actual, $expected), '::extractImports() does not return unexpected URLs');
+        $this->assertEquals([], array_diff($actual, $expected), '::extractImports() does not return unexpected URLs');
     }
 
     public function testFilterCommentless()
@@ -89,10 +89,10 @@ CSS;
 @import (once) url("once_with_url.less");
 LESS;
 
-        $expected = array('empty', 'foo.less', 'not-less-compatible.css', 'foo.css', 'bar.less', 'once.less', 'once_with_url.less');
+        $expected = ['empty', 'foo.less', 'not-less-compatible.css', 'foo.css', 'bar.less', 'once.less', 'once_with_url.less'];
         $actual = LessUtils::extractImports($content);
 
         $this->assertEquals($expected, array_intersect($expected, $actual), '::extractImports() returns all expected URLs');
-        $this->assertEquals(array(), array_diff($actual, $expected), '::extractImports() does not return unexpected URLs');
+        $this->assertEquals([], array_diff($actual, $expected), '::extractImports() does not return unexpected URLs');
     }
 }

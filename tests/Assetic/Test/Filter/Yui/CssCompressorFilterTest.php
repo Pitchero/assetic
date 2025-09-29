@@ -18,6 +18,6 @@ class CssCompressorFilterTest extends \PHPUnit_Framework_TestCase
     public function testInterface()
     {
         $filter = new CssCompressorFilter('/path/to/jar');
-        $this->assertInstanceOf('Assetic\\Filter\\FilterInterface', $filter, 'CssCompressorFilter implements FilterInterface');
+        $this->assertInstanceOf(\Assetic\Filter\FilterInterface::class, $filter, 'CssCompressorFilter implements FilterInterface');
     }
 }

@@ -18,24 +18,24 @@ class StringAssetTest extends \PHPUnit_Framework_TestCase
     public function testInterface()
     {
         $asset = new StringAsset('');
-        $this->assertInstanceOf('Assetic\\Asset\\AssetInterface', $asset, 'Asset implements AssetInterface');
+        $this->assertInstanceOf(\Assetic\Asset\AssetInterface::class, $asset, 'Asset implements AssetInterface');
     }
 
     public function testLoadAppliesFilters()
     {
-        $filter = $this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock();
+        $filter = $this->getMockBuilder(\Assetic\Filter\FilterInterface::class)->getMock();
         $filter->expects($this->once())->method('filterLoad');
 
-        $asset = new StringAsset('foo', array($filter));
+        $asset = new StringAsset('foo', [$filter]);
         $asset->load();
     }
 
     public function testAutomaticLoad()
     {
-        $filter = $this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock();
+        $filter = $this->getMockBuilder(\Assetic\Filter\FilterInterface::class)->getMock();
         $filter->expects($this->once())->method('filterLoad');
 
-        $asset = new StringAsset('foo', array($filter));
+        $asset = new StringAsset('foo', [$filter]);
         $asset->dump();
     }
 
@@ -50,7 +50,7 @@ class StringAssetTest extends \PHPUnit_Framework_TestCase
         $asset = new StringAsset('');
         $asset->load();
 
-        $filter = $this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock();
+        $filter = $this->getMockBuilder(\Assetic\Filter\FilterInterface::class)->getMock();
         $filter->expects($this->once())
             ->method('filterLoad')
             ->with($asset);
@@ -62,7 +62,7 @@ class StringAssetTest extends \PHPUnit_Framework_TestCase
     {
         $asset = new StringAsset('');
 
-        $filter = $this->getMockBuilder('Assetic\\Filter\\FilterInterface')->getMock();
+        $filter = $this->getMockBuilder(\Assetic\Filter\FilterInterface::class)->getMock();
         $filter->expects($this->once())
             ->method('filterDump')
             ->with($asset);

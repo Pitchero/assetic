@@ -22,21 +22,21 @@ class CoalescingDirectoryResourceTest extends \PHPUnit_Framework_TestCase
     public function shouldFilterFiles()
     {
         // notice only one directory has a trailing slash
-        $resource = new CoalescingDirectoryResource(array(
+        $resource = new CoalescingDirectoryResource([
             new DirectoryResource(__DIR__.'/Fixtures/dir1/', '/\.txt$/'),
             new DirectoryResource(__DIR__.'/Fixtures/dir2', '/\.txt$/'),
-        ));
+        ]);
 
-        $paths = array();
+        $paths = [];
         foreach ($resource as $file) {
             $paths[] = realpath((string) $file);
         }
         sort($paths);
 
-        $this->assertEquals(array(
+        $this->assertEquals([
             realpath(__DIR__.'/Fixtures/dir1/file1.txt'),
             realpath(__DIR__.'/Fixtures/dir1/file2.txt'),
             realpath(__DIR__.'/Fixtures/dir2/file3.txt'),
-        ), $paths, 'files from multiple directories are merged');
+        ], $paths, 'files from multiple directories are merged');
     }
 }

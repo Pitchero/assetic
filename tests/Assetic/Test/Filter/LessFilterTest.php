@@ -35,7 +35,7 @@ class LessFilterTest extends FilterTestCase
             $this->markTestSkipped('The "less" module is not installed.');
         }
 
-        $this->filter = new LessFilter($nodeBin, isset($_SERVER['NODE_PATH']) ? array($_SERVER['NODE_PATH']) : array());
+        $this->filter = new LessFilter($nodeBin, isset($_SERVER['NODE_PATH']) ? [$_SERVER['NODE_PATH']] : []);
     }
 
     protected function tearDown()
@@ -125,10 +125,10 @@ EOF;
 
 EOF;
 
-        $this->filter->setLoadPaths(array(
+        $this->filter->setLoadPaths([
             __DIR__.'/fixtures/less',
             __DIR__.'/fixtures/less/import_path',
-        ));
+        ]);
 
         $asset = new StringAsset('@import "main"; @import "_import"; .bar {color: @red}');
         $asset->load();
@@ -151,27 +151,27 @@ EOF;
 
     public function provideImports()
     {
-        return array(
-            array('@import \'main.less\';'),
-            array('@import "main.less";'),
-            array('@import url(\'main.less\');'),
-            array('@import url("main.less");'),
-            array('@import url(main.less);'),
-            array('@import \'main\';'),
-            array('@import "main";'),
-            array('@import url(\'main\');'),
-            array('@import url("main");'),
-            array('@import url(main);'),
-            array('@import-once \'main.less\';'),
-            array('@import-once "main.less";'),
-            array('@import-once url(\'main.less\');'),
-            array('@import-once url("main.less");'),
-            array('@import-once url(main.less);'),
-            array('@import-once \'main\';'),
-            array('@import-once "main";'),
-            array('@import-once url(\'main\');'),
-            array('@import-once url("main");'),
-            array('@import-once url(main);'),
-        );
+        return [
+            ['@import \'main.less\';'],
+            ['@import "main.less";'],
+            ['@import url(\'main.less\');'],
+            ['@import url("main.less");'],
+            ['@import url(main.less);'],
+            ['@import \'main\';'],
+            ['@import "main";'],
+            ['@import url(\'main\');'],
+            ['@import url("main");'],
+            ['@import url(main);'],
+            ['@import-once \'main.less\';'],
+            ['@import-once "main.less";'],
+            ['@import-once url(\'main.less\');'],
+            ['@import-once url("main.less");'],
+            ['@import-once url(main.less);'],
+            ['@import-once \'main\';'],
+            ['@import-once "main";'],
+            ['@import-once url(\'main\');'],
+            ['@import-once url("main");'],
+            ['@import-once url(main);'],
+        ];
     }
 }

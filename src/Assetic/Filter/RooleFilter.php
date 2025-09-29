@@ -47,8 +47,8 @@ class RooleFilter extends BaseNodeFilter implements DependencyExtractorInterface
         file_put_contents($input, $asset->getContent());
 
         $args = $this->nodeBin
-            ? array($this->nodeBin, $this->rooleBin)
-            : array($this->rooleBin);
+            ? [$this->nodeBin, $this->rooleBin]
+            : [$this->rooleBin];
 
         $args[] = $input;
 
@@ -79,6 +79,6 @@ class RooleFilter extends BaseNodeFilter implements DependencyExtractorInterface
     public function getChildren(AssetFactory $factory, $content, $loadPath = null)
     {
         // todo
-        return array();
+        return [];
     }
 }
